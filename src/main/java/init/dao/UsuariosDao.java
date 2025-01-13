@@ -7,6 +7,15 @@ import org.springframework.data.jpa.repository.Query;
 import init.entities.Usuario;
 
 public interface UsuariosDao extends JpaRepository<Usuario, Long> {
+	/*
+	Estos métodos tienen que servir para nuestra implementación personalizada de la interfaz
+		UserDetailsManager de Spring Security:
+	- findByUsername() -> loadUserByUsername() 
+	- save(), que no hace falta declarar -> createUser(), updateUser() 
+	- deleteByUsername() -> deleteUser() 
+	- updatePassword() -> changePassword() 
+	- existsByUsername() -> userExists()
+	*/
 	
 	Usuario findByUsername(String username);
 	
