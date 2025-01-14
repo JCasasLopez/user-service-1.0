@@ -3,9 +3,11 @@ package init.dao;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import init.entities.Usuario;
 
+@Repository
 public interface UsuariosDao extends JpaRepository<Usuario, Long> {
 	/*
 	Estos métodos tienen que servir para nuestra implementación personalizada de la interfaz
@@ -22,7 +24,7 @@ public interface UsuariosDao extends JpaRepository<Usuario, Long> {
 	void deleteByUsername(String username);
 	
 	@Modifying
-    @Query("UPDATE User u SET u.password = ?1 WHERE u.username = ?2")
+    @Query("UPDATE Usuario u SET u.password = ?2 WHERE u.username = ?1")
     void updatePassword(String username, String newPassword);
 	
 	boolean existsByUsername(String username);

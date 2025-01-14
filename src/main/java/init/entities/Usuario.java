@@ -11,12 +11,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-
 
 @Entity
 @Table(name="users")
@@ -31,9 +31,6 @@ public class Usuario {
 	private String username;
 	
 	@NotBlank()
-	@Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{10,}$",
-			message = "La contraseña debe tener al menos 10 caracteres, una mayúscula, una minúscula, "
-			+ "un número y un carácter especial")
 	private String password;
 	
 	@NotBlank()
@@ -44,19 +41,20 @@ public class Usuario {
 	@Email(message = "El email debe tener un formato válido")
 	private String email;
 	
-	@NotBlank()
+	@NotNull()
 	private LocalDate fechaNacimiento;
 	
-	@JoinTable(name="user_roles",
-			joinColumns=@JoinColumn(name="idUsuario", referencedColumnName="user_id"),
-			inverseJoinColumns=@JoinColumn(name="idRol", referencedColumnName="role_id"))
+	@ManyToMany
+    @JoinTable(name="user_roles",
+        joinColumns=@JoinColumn(name="user_id", referencedColumnName="idUsuario"),
+        inverseJoinColumns=@JoinColumn(name="rol_id", referencedColumnName="idRol"))
 	private Set<Rol> roles = new HashSet<>();
 
 	public Usuario(@NotBlank @Size(min = 8, max = 20) String username,
-			@NotBlank @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{10,}$", message = "La contraseña debe tener al menos 10 caracteres, una mayúscula, una minúscula, un número y un carácter especial") String password,
+			@NotBlank String password,
 			@NotBlank String nombreCompleto,
 			@NotBlank @Email(message = "El email debe tener un formato válido") String email,
-			@NotBlank LocalDate fechaNacimiento) {
+			@NotNull LocalDate fechaNacimiento) {
 		this.username = username;
 		this.password = password;
 		this.nombreCompleto = nombreCompleto;
