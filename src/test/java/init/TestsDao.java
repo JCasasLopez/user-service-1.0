@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
 
+import init.dao.RolesDao;
 import init.dao.UsuariosDao;
+import init.entities.Rol;
 import init.entities.Usuario;
 import jakarta.persistence.EntityManager;
 
@@ -25,13 +29,37 @@ class TestsDao {
 	UsuariosDao usuariosDao;
 	
 	@Autowired
+	RolesDao rolesDao;
+	
+	@Autowired
     private EntityManager entityManager;
+	
+	//Estos son métodos auxiliares para crear objetos, etc, para reducir código "boilerplate"
 	
 	private Usuario saveUser1() {
 		Usuario user1 = new Usuario ("Yorch123", "Password123!", "Jorge García", "jc@gmail.com", 
 				LocalDate.of(1980, 11, 11));
 		return usuariosDao.save(user1);
 	}
+	
+	private Rol saveRole(String roleName) {
+	    Rol rol = new Rol(roleName);
+	    rolesDao.save(rol);
+	    return rol;
+	}
+	
+	private Usuario saveUserWithRoles(String username, Set<Rol> roles) {
+	    Usuario user = saveUser1();
+	    user.setRoles(roles);
+	    entityManager.flush();
+	    entityManager.clear();
+	    return user;
+	}
+	
+	//Los siguientes 2 tests verifican las validaciones a nivel de base de datos (no acepta 
+	//usuarios con el username ni con el email repetidos). 
+	//El resto de validaciones (@Email, @NotBlank, @Size...) son a nivel del controller 
+	//y tiene más sentido testearlas allí.
 
 	@Test
 	@DisplayName("No acepta 2 usuarios con el mismo username")
@@ -62,6 +90,9 @@ class TestsDao {
 			}, "Se esperaba una DataIntegrityViolationException al intentar persistir un "
 					+ "usuario con el email duplicado.");
 	}
+	
+	//Los siguientes 4 tests verifican los métodos de la capa Dao. Como tienen consultas JPQL
+	//personalizadas, o la consulta se deriva del nombre del método, es conveniente testearlos.
 	
 	@Test
 	@DisplayName("Encuentra al usuario con ese username")
@@ -131,4 +162,42 @@ class TestsDao {
 				"Se esperaba que la contraseña fuera 'qwerty'");
 	}
 	
+	//Estos tests verifican que la relación entre Usuario y Rol esté bien configurada
+	
+	@Test
+	@DisplayName("Guarda correctamente los roles en una entidad Usuario")
+	void deberiaGuardarUsuarioConRoles() {
+		// Arrange
+	    Rol rol1 = saveRole("USER");
+	    Rol rol2 = saveRole("ADMIN");
+	    Usuario user1 = saveUserWithRoles("user1", Set.of(rol1, rol2));
+
+	    // Act
+	    Usuario usuarioPersistido = usuariosDao.findByUsername(user1.getUsername());
+
+	    // Assert
+	    assertEquals(2, usuarioPersistido.getRoles().size());
+	}
+	
+	@Test
+	@DisplayName("Borra roles sin afectar a la entidad Usuario")
+	void deberiaEliminarRolSinAfectarUsuario() {
+		// Arrange
+	    Rol rol1 = saveRole("USER");
+	    Set<Rol> roles = new HashSet<>();
+	    roles.add(rol1);
+	    Usuario user1 = saveUserWithRoles("user1", roles);
+
+	    // Act
+	    user1.getRoles().remove(rol1);
+	    rol1.getUsuarios().remove(user1); 
+	    usuariosDao.save(user1);
+	    entityManager.flush();
+	    entityManager.clear();
+
+	    Usuario usuarioTrasEliminarRol = usuariosDao.findByUsername(user1.getUsername());
+
+	    // Assert
+	    assertEquals(0, usuarioTrasEliminarRol.getRoles().size());
+	}
 }

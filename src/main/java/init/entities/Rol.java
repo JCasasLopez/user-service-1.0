@@ -24,8 +24,7 @@ public class Rol {
 	@ManyToMany(mappedBy="roles")
 	private Set<Usuario> usuarios = new HashSet<>();
 
-	public Rol(int idRol, String nombreRol) {
-		this.idRol = idRol;
+	public Rol(String nombreRol) {
 		this.nombreRol = nombreRol;
 	}
 
