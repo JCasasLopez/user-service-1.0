@@ -1,70 +1,49 @@
-package init.entities;
+package init.model;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import init.entities.Rol;
 
-@Entity
-@Table(name="users")
-public class Usuario {
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+public class UsuarioDto {
 	private long idUsuario;
-	
-	@Column(unique=true)
-	@NotBlank()
-	@Size(min=8, max=20)
 	private String username;
-	
-	@NotBlank()
 	private String password;
-	
-	@NotBlank()
 	private String nombreCompleto;
-	
-	@Column(unique=true)
-	@NotBlank()
-	@Email(message = "El email debe tener un formato válido")
 	private String email;
-	
-	@NotNull()
 	private LocalDate fechaNacimiento;
-	
-	@ManyToMany
-    @JoinTable(name="user_roles",
-        joinColumns=@JoinColumn(name="user_id", referencedColumnName="idUsuario"),
-        inverseJoinColumns=@JoinColumn(name="rol_id", referencedColumnName="idRol"))
 	private Set<Rol> roles;
-
-	public Usuario(@NotBlank @Size(min = 8, max = 20) String username,
-			@NotBlank String password,
-			@NotBlank String nombreCompleto,
-			@NotBlank @Email(message = "El email debe tener un formato válido") String email,
-			@NotNull LocalDate fechaNacimiento) {
+	
+	//UsuarioDto -> Usuario (JPA)
+	//Para la creación de un nuevo usuario se asigna el rol "ROLE_USER" automáticamente
+	public UsuarioDto(String username, String password, String nombreCompleto, String email,
+			LocalDate fechaNacimiento) {
 		this.username = username;
 		this.password = password;
 		this.nombreCompleto = nombreCompleto;
 		this.email = email;
 		this.fechaNacimiento = fechaNacimiento;
+		this.roles = new HashSet<>();
+		this.roles.add(new Rol("ROLE_USER"));
+	}
+	
+	//Usuario (JPA) -> UsuarioDto
+	public UsuarioDto(long idUsuario, String username, String password, String nombreCompleto, String email,
+			LocalDate fechaNacimiento, Set<Rol> roles) {
+		this.idUsuario = idUsuario;
+		this.username = username;
+		this.password = password;
+		this.nombreCompleto = nombreCompleto;
+		this.email = email;
+		this.fechaNacimiento = fechaNacimiento;
+		this.roles = roles;
 	}
 
-	public Usuario() {
+	public UsuarioDto() {
 		super();
 	}
-
+	
 	public long getIdUsuario() {
 		return idUsuario;
 	}
@@ -120,5 +99,6 @@ public class Usuario {
 	public void setRoles(Set<Rol> roles) {
 		this.roles = roles;
 	}
+
 	
 }
