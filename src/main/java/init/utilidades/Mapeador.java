@@ -2,6 +2,7 @@ package init.utilidades;
 
 import org.springframework.stereotype.Component;
 
+import init.config.security.UsuarioSecurity;
 import init.entities.Usuario;
 import init.model.UsuarioDto;
 
@@ -24,5 +25,9 @@ public class Mapeador {
 						usuario.getEmail(),
 						usuario.getFechaNacimiento(),
 						usuario.getRoles());
+	}
+	
+	public UsuarioSecurity usuarioToUsuarioSecurity (Usuario usuario) {
+		return new UsuarioSecurity(usuario);
 	}
 }
