@@ -10,8 +10,8 @@ import init.entities.Usuario;
 @Repository
 public interface UsuariosDao extends JpaRepository<Usuario, Long> {
 	/*
-	Estos métodos tienen que servir para nuestra implementación personalizada de la interfaz
-		UserDetailsManager de Spring Security:
+	Estos métodos sirven para nuestra implementación personalizada de UserDetailsManager (Spring Security):
+	       DAO     ->     UserDetailsManager
 	- findByUsername() -> loadUserByUsername() 
 	- save(), que no hace falta declarar -> createUser(), updateUser() 
 	- deleteByUsername() -> deleteUser() 
