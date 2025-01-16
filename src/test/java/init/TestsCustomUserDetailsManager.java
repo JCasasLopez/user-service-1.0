@@ -1,5 +1,7 @@
 package init;
 
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -24,4 +26,11 @@ public class TestsCustomUserDetailsManager {
 	
 	@InjectMocks
 	CustomUserDetailsManager customUserDetailsManager;
+	
+	@Test
+	@DisplayName("El usuario carga correctamente desde la base de datos")
+	void loadUserByUsername_usuarioCargaCorrectamente() {
+		
+	}
+	
 }
