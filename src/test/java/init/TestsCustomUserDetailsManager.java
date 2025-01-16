@@ -107,8 +107,35 @@ public class TestsCustomUserDetailsManager {
 		assertThrows(IllegalArgumentException.class, 
 				() -> {customUserDetailsManager.updateUser(user);}, 
 						"Se esperaba una IllegalArgumentException");
-				
+	}
+	
+	@Test
+	@DisplayName("Usuario actualizado correctamente")
+	void updateUser_happyPath() {
+		//Arrange
+		Usuario usuario = new Usuario("Pepe", "12345", "Pepe García", "pg@gmail.com", LocalDate.of(1962, 3, 5));
+		UsuarioSecurity usuarioSecurity = new UsuarioSecurity(usuario);
 		
+		//Act
+		customUserDetailsManager.updateUser(usuarioSecurity);
+		
+		//Assert
+		verify(usuariosDao).save(usuario);
+	}
+	
+	@Test
+	@DisplayName("Usuario no se pudo actualizar")
+	void updateUserUser_usuarioNoCompatible() {
+	//Si el UserDetails pasado como parámetro no es compatible con UsuarioSecurity, 
+	//en otras palabras, si pertenece a otra implementación de UserDetails, lanza una excepción
+		
+		//Arrange
+		User user = new User("admin", "{noop}password", List.of(new SimpleGrantedAuthority("ROLE_ADMIN")));
+
+		//Act & Assert
+		assertThrows(IllegalArgumentException.class, 
+				() -> {customUserDetailsManager.updateUser(user);}, 
+						"Se esperaba una IllegalArgumentException");
 	}
 	
 }
