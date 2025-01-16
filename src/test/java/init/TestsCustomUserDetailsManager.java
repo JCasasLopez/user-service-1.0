@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -125,7 +126,7 @@ public class TestsCustomUserDetailsManager {
 	
 	@Test
 	@DisplayName("Usuario no se pudo actualizar")
-	void updateUserUser_usuarioNoCompatible() {
+	void updateUser_usuarioNoCompatible() {
 	//Si el UserDetails pasado como parámetro no es compatible con UsuarioSecurity, 
 	//en otras palabras, si pertenece a otra implementación de UserDetails, lanza una excepción
 		
@@ -136,6 +137,38 @@ public class TestsCustomUserDetailsManager {
 		assertThrows(IllegalArgumentException.class, 
 				() -> {customUserDetailsManager.updateUser(user);}, 
 						"Se esperaba una IllegalArgumentException");
+	}
+	
+	@Test
+	@DisplayName("Usuario borrado correctamente")
+	void deleteUser_happyPath() {
+		//Arrange
+		String username = "Pepe";
+		when(usuariosDao.existsByUsername(username)).thenReturn(true);
+		
+		//Act 
+		customUserDetailsManager.deleteUser(username);
+		
+		//Assert
+		verify(usuariosDao).existsByUsername(username);
+		verify(usuariosDao).deleteByUsername(username);
+	}
+	
+	@Test
+	@DisplayName("Usuario no se pudo borrar")
+	void deleteUser_usuarioNoEncontrado() {
+		//Arrange
+		String username = "Pepe";
+		when(usuariosDao.existsByUsername(username)).thenReturn(false);
+		
+		//Act & Assert
+		assertThrows(UsernameNotFoundException.class, 
+				() -> {customUserDetailsManager.deleteUser(username);}, 
+						"Se esperaba una UsernameNotFoundException");
+		
+		//Assert
+		verify(usuariosDao).existsByUsername(username);
+		verify(usuariosDao, never()).deleteByUsername(username);
 	}
 	
 }
