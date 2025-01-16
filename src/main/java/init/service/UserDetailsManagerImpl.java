@@ -46,7 +46,7 @@ public class UserDetailsManagerImpl implements UserDetailsManager {
 			Usuario usuario = usuarioSecurity.getUsuario();
 			usuariosDao.save(usuario);
 		}else {
-			throw new IllegalArgumentException("El objeto UserDetails proporcionado no es compatible");
+			throw new IllegalArgumentException("El objeto proporcionado no es compatible con la clase UserDetails");
 		}
 
 	}

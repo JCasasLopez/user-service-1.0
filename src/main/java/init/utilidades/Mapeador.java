@@ -30,4 +30,9 @@ public class Mapeador {
 	public UsuarioSecurity usuarioToUsuarioSecurity (Usuario usuario) {
 		return new UsuarioSecurity(usuario);
 	}
+	
+	public UsuarioSecurity usuarioDtoToUsuarioSecurity(UsuarioDto usuario) {
+		Usuario usuarioEntity = usuarioDtoToUsuario(usuario);
+		return usuarioToUsuarioSecurity(usuarioEntity);
+	}
 }
