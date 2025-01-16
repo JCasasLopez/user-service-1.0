@@ -2,6 +2,7 @@ package init.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,6 +31,8 @@ public class UserDetailsManagerImpl implements UserDetailsManager {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		//Método interno usado por Spring Security durante el proceso de autenticación
+		//No debe exponerse directamente a los usuarios
 		if(usuariosDao.findByUsername(username)==null) {
 			throw new UsernameNotFoundException("Usuario no encontrado" + username);
 		}
@@ -38,6 +41,7 @@ public class UserDetailsManagerImpl implements UserDetailsManager {
 
 	@Override
 	public void createUser(UserDetails user) {
+		//Accesible a cualquiera
 		if(user instanceof UsuarioSecurity) {
 			UsuarioSecurity usuarioSecurity = (UsuarioSecurity) user;
 			Usuario usuario = usuarioSecurity.getUsuario();
@@ -48,7 +52,9 @@ public class UserDetailsManagerImpl implements UserDetailsManager {
 	}
 
 	@Override
+	@PreAuthorize("authentication.name == #username")
 	public void updateUser(UserDetails user) {
+		//Accesible solo al usuario mismo una vez esté autenticado
 		if(user instanceof UsuarioSecurity) {
 			UsuarioSecurity usuarioSecurity = (UsuarioSecurity) user;
 			Usuario usuario = usuarioSecurity.getUsuario();
@@ -60,7 +66,9 @@ public class UserDetailsManagerImpl implements UserDetailsManager {
 	}
 
 	@Override
+	@PreAuthorize("authentication.name == #username")
 	public void deleteUser(String username) {
+		//Accesible solo al usuario mismo una vez esté autenticado
 		if(!usuariosDao.existsByUsername(username)) {
 			throw new UsernameNotFoundException("Usuario no encontrado" + username);
 		}
@@ -68,7 +76,10 @@ public class UserDetailsManagerImpl implements UserDetailsManager {
 	}
 
 	@Override
+	@PreAuthorize("authentication.name == #username")
 	public void changePassword(String oldPassword, String newPassword) {
+		//Accesible solo al usuario mismo una vez esté autenticado
+		
 		//Obtenemos el objeto Usuario del Security Context
 	    Authentication usuarioActual = SecurityContextHolder.getContext().getAuthentication();
 	    if (usuarioActual == null) {
@@ -88,6 +99,7 @@ public class UserDetailsManagerImpl implements UserDetailsManager {
 
 	@Override
 	public boolean userExists(String username) {
+		//Accesible a cualquiera
 		return usuariosDao.existsByUsername(username);
 	}
 
