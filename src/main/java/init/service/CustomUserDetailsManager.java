@@ -18,7 +18,7 @@ import init.entities.Usuario;
 import init.utilidades.Mapeador;
 
 @Service
-public class UserDetailsManagerImpl implements UserDetailsManager {
+public class CustomUserDetailsManager implements UserDetailsManager {
 	
 	@Autowired
 	UsuariosDao usuariosDao;
