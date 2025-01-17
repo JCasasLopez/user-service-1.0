@@ -2,8 +2,10 @@ package init;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -171,4 +173,41 @@ public class TestsCustomUserDetailsManager {
 		verify(usuariosDao, never()).deleteByUsername(username);
 	}
 	
+	/**********************************************************************************************
+	No hay tests para el método changePassword() porque SecurityContextHolder.getContext()
+	es un método estático, y Mockito no soporta el mockeado de métodos estáticos en su versión normal.
+	He intentado resolverlo con la librería Mockito-inline, pero no he conseguido que funcione.
+	
+	La forma normal de solucionar este problema sería inyectar el objeto SecurityContextHolder por
+	constructor en el método changePassword(), pero esto tampoco funciona porque es una interfaz que 
+	hay que implementar, y las reglas de sobreescritura impiden cambiar la firma de un método 
+	***********************************************************************************************/
+	
+	@Test
+	@DisplayName("El usuario existe")
+	void userExists_happyPath() {
+		//Arrange
+		String username = "Pepe";
+		when(usuariosDao.existsByUsername(username)).thenReturn(true);
+		
+		//Act
+		boolean response = customUserDetailsManager.userExists(username);
+		
+		//Assert
+		assertTrue(response);
+	}
+	
+	@Test
+	@DisplayName("El usuario NO existe")
+	void userExists_usuarioNoExiste() {
+		//Arrange
+		String username = "Pepe";
+		when(usuariosDao.existsByUsername(username)).thenReturn(false);
+				
+		//Act
+		boolean response = customUserDetailsManager.userExists(username);
+				
+		//Assert
+		assertFalse(response);
+	}
 }
