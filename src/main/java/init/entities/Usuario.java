@@ -26,7 +26,6 @@ public class Usuario {
 	
 	@Column(unique=true)
 	@NotBlank()
-	@Size(min=8, max=20)
 	private String username;
 	
 	@NotBlank()

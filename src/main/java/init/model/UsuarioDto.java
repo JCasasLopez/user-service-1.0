@@ -1,7 +1,6 @@
 package init.model;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 
 import init.entities.Rol;
@@ -24,8 +23,6 @@ public class UsuarioDto {
 		this.nombreCompleto = nombreCompleto;
 		this.email = email;
 		this.fechaNacimiento = fechaNacimiento;
-		this.roles = new HashSet<>();
-		this.roles.add(new Rol("ROLE_USER"));
 	}
 	
 	//Usuario (JPA) -> UsuarioDto

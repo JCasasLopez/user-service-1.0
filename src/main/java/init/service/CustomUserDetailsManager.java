@@ -1,5 +1,8 @@
 package init.service;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -12,21 +15,36 @@ import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 
 import init.config.security.UsuarioSecurity;
+import init.dao.RolesDao;
 import init.dao.UsuariosDao;
+import init.entities.Rol;
 import init.entities.Usuario;
+import init.exception.RolNotFoundException;
 import init.utilidades.Mapeador;
 
 @Service
 public class CustomUserDetailsManager implements UserDetailsManager {
 	
 	UsuariosDao usuariosDao;
+	RolesDao rolesDao;
 	Mapeador mapeador;
 	PasswordEncoder passwordEncoder;
 	
-	public CustomUserDetailsManager(UsuariosDao usuariosDao, Mapeador mapeador, PasswordEncoder passwordEncoder) {
+	public CustomUserDetailsManager(UsuariosDao usuariosDao, Mapeador mapeador, 
+			PasswordEncoder passwordEncoder, RolesDao rolesDao) {
 		this.usuariosDao = usuariosDao;
 		this.mapeador = mapeador;
 		this.passwordEncoder = passwordEncoder;
+		this.rolesDao = rolesDao;
+	}
+	
+	private Usuario addRole(Usuario usuario, int idRol) {
+		Rol rol = rolesDao.findById(idRol)
+		        .orElseThrow(() -> new RolNotFoundException("Rol no encontrado: " + idRol));
+		    Set<Rol> roles = new HashSet<>();
+		    roles.add(rol);
+		    usuario.setRoles(roles);
+		    return usuario;
 	}
 
 	@Override
@@ -46,7 +64,7 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 			UsuarioSecurity usuarioSecurity = (UsuarioSecurity) user;
 			Usuario usuario = usuarioSecurity.getUsuario();
 			usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
-			usuariosDao.save(usuario);
+			usuariosDao.save(addRole(usuario, 1));
 		}else {
 			throw new IllegalArgumentException("El objeto UserDetails proporcionado no es compatible");
 		}
