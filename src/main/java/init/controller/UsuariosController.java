@@ -33,7 +33,7 @@ public class UsuariosController {
 	//loadUserByUsername() es un método interno usado por Spring Security durante
 	//el proceso de autenticación y no debe exponerse directamente a los usuarios
 	
-	@PostMapping(value="altaUsuario", consumes=MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value="public/altaUsuario", consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> altaUsuario(@Valid @RequestBody UsuarioDto usuario){
 		UsuarioSecurity usuarioSecurity = new UsuarioSecurity(mapeador.usuarioDtoToUsuario(usuario));
 		customUserDetailsManager.createUser(usuarioSecurity);
@@ -60,7 +60,7 @@ public class UsuariosController {
 		return ResponseEntity.status(HttpStatus.OK).body("Contraseña cambiada correctamente");
 	}
 	
-	@GetMapping(value="usuarioExiste", consumes=MediaType.TEXT_PLAIN_VALUE)
+	@GetMapping(value="public/usuarioExiste", consumes=MediaType.TEXT_PLAIN_VALUE)
 	public ResponseEntity<String> usuarioExiste(@Valid @RequestParam  String username){
 		boolean response = customUserDetailsManager.userExists(username);
 		return ResponseEntity.status(HttpStatus.OK).body(String.valueOf(response));

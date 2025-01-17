@@ -45,6 +45,7 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 		if(user instanceof UsuarioSecurity) {
 			UsuarioSecurity usuarioSecurity = (UsuarioSecurity) user;
 			Usuario usuario = usuarioSecurity.getUsuario();
+			usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
 			usuariosDao.save(usuario);
 		}else {
 			throw new IllegalArgumentException("El objeto UserDetails proporcionado no es compatible");
@@ -54,15 +55,7 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 	@Override
 	@PreAuthorize("authentication.name == #username")
 	public void updateUser(UserDetails user) {
-		//Accesible solo al usuario mismo una vez esté autenticado
-		if(user instanceof UsuarioSecurity) {
-			UsuarioSecurity usuarioSecurity = (UsuarioSecurity) user;
-			Usuario usuario = usuarioSecurity.getUsuario();
-			usuariosDao.save(usuario);
-		}else {
-			throw new IllegalArgumentException("El objeto proporcionado no es compatible con la clase UserDetails");
-		}
-
+		createUser(user);
 	}
 
 	@Override
