@@ -7,7 +7,7 @@ import java.util.Set;
 import init.entities.Rol;
 
 public class UsuarioDto {
-	private long idUsuario;
+	private int idUsuario;
 	private String username;
 	private String password;
 	private String nombreCompleto;
@@ -29,7 +29,7 @@ public class UsuarioDto {
 	}
 	
 	//Usuario (JPA) -> UsuarioDto
-	public UsuarioDto(long idUsuario, String username, String password, String nombreCompleto, String email,
+	public UsuarioDto(int idUsuario, String username, String password, String nombreCompleto, String email,
 			LocalDate fechaNacimiento, Set<Rol> roles) {
 		this.idUsuario = idUsuario;
 		this.username = username;
@@ -44,11 +44,11 @@ public class UsuarioDto {
 		super();
 	}
 	
-	public long getIdUsuario() {
+	public int getIdUsuario() {
 		return idUsuario;
 	}
 
-	public void setIdUsuario(long idUsuario) {
+	public void setIdUsuario(int idUsuario) {
 		this.idUsuario = idUsuario;
 	}
 

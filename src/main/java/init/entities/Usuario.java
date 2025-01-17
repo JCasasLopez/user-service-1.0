@@ -22,7 +22,7 @@ import jakarta.validation.constraints.Size;
 public class Usuario {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private long idUsuario;
+	private int idUsuario;
 	
 	@Column(unique=true)
 	@NotBlank()
@@ -65,11 +65,11 @@ public class Usuario {
 		super();
 	}
 
-	public long getIdUsuario() {
+	public int getIdUsuario() {
 		return idUsuario;
 	}
 
-	public void setIdUsuario(long idUsuario) {
+	public void setIdUsuario(int idUsuario) {
 		this.idUsuario = idUsuario;
 	}
 
