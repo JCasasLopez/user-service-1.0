@@ -1,6 +1,5 @@
 package init.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -20,14 +19,15 @@ import init.utilidades.Mapeador;
 @Service
 public class CustomUserDetailsManager implements UserDetailsManager {
 	
-	@Autowired
 	UsuariosDao usuariosDao;
-	
-	@Autowired
 	Mapeador mapeador;
-	
-	@Autowired
 	PasswordEncoder passwordEncoder;
+	
+	public CustomUserDetailsManager(UsuariosDao usuariosDao, Mapeador mapeador, PasswordEncoder passwordEncoder) {
+		this.usuariosDao = usuariosDao;
+		this.mapeador = mapeador;
+		this.passwordEncoder = passwordEncoder;
+	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
