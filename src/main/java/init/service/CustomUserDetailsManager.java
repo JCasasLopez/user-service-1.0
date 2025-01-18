@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import init.config.security.UsuarioSecurity;
 import init.dao.RolesDao;
@@ -77,6 +78,7 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 	}
 
 	@Override
+	@Transactional
 	@PreAuthorize("authentication.name == #username")
 	public void deleteUser(String username) {
 		//Accesible solo al usuario mismo una vez esté autenticado
@@ -87,6 +89,7 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 	}
 
 	@Override
+	@Transactional
 	@PreAuthorize("authentication.name == #username")
 	public void changePassword(String oldPassword, String newPassword) {
 		//Accesible solo al usuario mismo una vez esté autenticado

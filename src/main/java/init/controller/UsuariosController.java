@@ -40,27 +40,27 @@ public class UsuariosController {
 		return ResponseEntity.status(HttpStatus.CREATED).body("Usuario creado correctamente");
 	}
 	
-	@PutMapping(value="actualizarUsuario", consumes=MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping(value="actualizarUsuario", produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> actualizarUsuario(@Valid @RequestBody UsuarioDto usuario){
 		UsuarioSecurity usuarioSecurity = new UsuarioSecurity(mapeador.usuarioDtoToUsuario(usuario));
 		customUserDetailsManager.updateUser(usuarioSecurity);
 		return ResponseEntity.status(HttpStatus.OK).body("Usuario actualizado correctamente");
 	}
 	
-	@DeleteMapping(value="borrarUsuario", consumes=MediaType.TEXT_PLAIN_VALUE)
+	@DeleteMapping(value="borrarUsuario", produces=MediaType.TEXT_PLAIN_VALUE)
 	public ResponseEntity<String> borrarUsuario(@Valid @RequestParam String username){
 		customUserDetailsManager.deleteUser(username);
 		return ResponseEntity.status(HttpStatus.OK).body("Usuario borrado correctamente");
 	}
 	
-	@PutMapping(value="cambiarPassword", consumes=MediaType.TEXT_PLAIN_VALUE)
+	@PutMapping(value="cambiarPassword", produces=MediaType.TEXT_PLAIN_VALUE)
 	public ResponseEntity<String> cambiarPassword(@Valid @RequestParam  String oldPassword, 
 																		@RequestParam String newPassword){
 		customUserDetailsManager.changePassword(oldPassword, newPassword);
 		return ResponseEntity.status(HttpStatus.OK).body("Contraseña cambiada correctamente");
 	}
 	
-	@GetMapping(value="public/usuarioExiste", consumes=MediaType.TEXT_PLAIN_VALUE)
+	@GetMapping(value="public/usuarioExiste", produces=MediaType.TEXT_PLAIN_VALUE)
 	public ResponseEntity<String> usuarioExiste(@Valid @RequestParam  String username){
 		boolean response = customUserDetailsManager.userExists(username);
 		return ResponseEntity.status(HttpStatus.OK).body(String.valueOf(response));
