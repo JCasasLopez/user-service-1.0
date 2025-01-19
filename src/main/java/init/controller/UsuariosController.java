@@ -40,13 +40,6 @@ public class UsuariosController {
 		return ResponseEntity.status(HttpStatus.CREATED).body("Usuario creado correctamente");
 	}
 	
-	@PutMapping(value="actualizarUsuario", produces=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> actualizarUsuario(@Valid @RequestBody UsuarioDto usuario){
-		UsuarioSecurity usuarioSecurity = new UsuarioSecurity(mapeador.usuarioDtoToUsuario(usuario));
-		customUserDetailsManager.updateUser(usuarioSecurity);
-		return ResponseEntity.status(HttpStatus.OK).body("Usuario actualizado correctamente");
-	}
-	
 	@DeleteMapping(value="borrarUsuario", produces=MediaType.TEXT_PLAIN_VALUE)
 	public ResponseEntity<String> borrarUsuario(@Valid @RequestParam String username){
 		customUserDetailsManager.deleteUser(username);

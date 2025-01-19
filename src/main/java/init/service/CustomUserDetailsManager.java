@@ -32,7 +32,7 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 	PasswordEncoder passwordEncoder;
 	
 	public CustomUserDetailsManager(UsuariosDao usuariosDao, Mapeador mapeador, 
-			PasswordEncoder passwordEncoder, RolesDao rolesDao) {
+													PasswordEncoder passwordEncoder, RolesDao rolesDao) {
 		this.usuariosDao = usuariosDao;
 		this.mapeador = mapeador;
 		this.passwordEncoder = passwordEncoder;
@@ -72,9 +72,8 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 	}
 
 	@Override
-	@PreAuthorize("authentication.name == #username")
 	public void updateUser(UserDetails user) {
-		createUser(user);
+		
 	}
 
 	@Override
