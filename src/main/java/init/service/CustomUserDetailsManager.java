@@ -1,6 +1,5 @@
 package init.service;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.security.access.AccessDeniedException;
@@ -19,9 +18,8 @@ import init.dao.RolesDao;
 import init.dao.UsuariosDao;
 import init.entities.Rol;
 import init.entities.Usuario;
-import init.exception.EmailAlreadyExistsException;
 import init.exception.RolNotFoundException;
-import init.exception.UsernameAlreadyExistsException;
+import init.exception.UserAlreadyAdminException;
 import init.utilidades.Mapeador;
 
 @Service
@@ -42,11 +40,10 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 	
 	private Usuario addRole(Usuario usuario, int idRol) {
 		Rol rol = rolesDao.findById(idRol)
-		        .orElseThrow(() -> new RolNotFoundException("Rol no encontrado: " + idRol));
-		    Set<Rol> roles = new HashSet<>();
-		    roles.add(rol);
-		    usuario.setRoles(roles);
-		    return usuario;
+				.orElseThrow(() -> new RolNotFoundException("Rol no encontrado: " + idRol));
+		Set<Rol> roles = usuario.getRoles();
+		roles.add(rol);
+		return usuario;
 	}
 
 	@Override
@@ -64,12 +61,6 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 		if (user instanceof UsuarioSecurity) {
 			UsuarioSecurity usuarioSecurity = (UsuarioSecurity) user;
 			Usuario usuario = usuarioSecurity.getUsuario();
-			/*if(usuariosDao.existsByUsername(usuario.getUsername())) {
-				throw new UsernameAlreadyExistsException("Ya existe un usuario con ese username");
-			}
-			if(usuariosDao.existsByEmail(usuario.getEmail())) {
-				throw new EmailAlreadyExistsException("Ya existe un usuario con ese email");
-			}*/
 			usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
 			usuariosDao.save(addRole(usuario, 1));
 		} else {
@@ -119,5 +110,19 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 		//Accesible a cualquiera
 		return usuariosDao.existsByUsername(username);
 	}
-
+	
+	public Usuario findUser(String username) {
+		if(usuariosDao.findByUsername(username)!=null) {
+			return usuariosDao.findByUsername(username);
+		}
+		throw new UsernameNotFoundException(("Usuario " + username + " no encontrado"));
+	}
+	
+	public void upgradeUser(Usuario usuario) {
+		//Este método, solo accesible al "SUPER ADMIN" convierte usuarios normales en "admins"
+		if(usuario.getRoles().size() > 1) {
+			throw new UserAlreadyAdminException("El usuario ya tiene el rol ADMIN");
+		}
+		usuariosDao.save(addRole(usuario, 2));
+	}
 }

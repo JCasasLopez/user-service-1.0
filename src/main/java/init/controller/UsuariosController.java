@@ -59,4 +59,10 @@ public class UsuariosController {
 		return ResponseEntity.status(HttpStatus.OK).body(String.valueOf(response));
 	}
 	
+	@PostMapping(value="crearAdmin")
+	public ResponseEntity<String> crearAdmin(@RequestParam  String username){
+		customUserDetailsManager.upgradeUser(customUserDetailsManager.findUser(username));
+		return ResponseEntity.status(HttpStatus.OK).body("Usuario promocionado a ADMIN correctamente");
+	}
+	
 }

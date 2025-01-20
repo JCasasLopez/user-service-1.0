@@ -9,8 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import init.exception.EmailAlreadyExistsException;
-import init.exception.UsernameAlreadyExistsException;
+import init.exception.UserAlreadyAdminException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -51,13 +50,8 @@ public class GlobalExceptionHandler {
 		}
 	}
 	
-	@ExceptionHandler(EmailAlreadyExistsException.class)
-	public ResponseEntity<String> handleEmailAlreadyExistsException(EmailAlreadyExistsException ex) {
-		return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
-	}
-	
-	@ExceptionHandler(UsernameAlreadyExistsException.class)
-	public ResponseEntity<String> handleUsernameAlreadyExistsException(UsernameAlreadyExistsException ex) {
+	@ExceptionHandler(UserAlreadyAdminException.class)
+	public ResponseEntity<String> handleUserAlreadyAdminException(UserAlreadyAdminException ex) {
 		return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
 	}
 	

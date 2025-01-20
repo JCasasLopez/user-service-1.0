@@ -59,6 +59,19 @@ public class Usuario {
 		this.email = email;
 		this.fechaNacimiento = fechaNacimiento;
 	}
+	
+	public Usuario(@NotBlank String username, 
+			@NotBlank String password, @NotBlank String nombreCompleto,
+			@NotBlank @Email(message = "El email debe tener un formato válido") String email,
+			@NotNull LocalDate fechaNacimiento, 
+			Set<Rol> roles) {
+		this.username = username;
+		this.password = password;
+		this.nombreCompleto = nombreCompleto;
+		this.email = email;
+		this.fechaNacimiento = fechaNacimiento;
+		this.roles = roles;
+	}
 
 	public Usuario() {
 		super();

@@ -14,7 +14,8 @@ public class Mapeador {
 						usuario.getPassword(),
 						usuario.getNombreCompleto(),
 						usuario.getEmail(),
-						usuario.getFechaNacimiento());
+						usuario.getFechaNacimiento(),
+						usuario.getRoles());
 	}
 	
 	public UsuarioDto usuarioToUsuarioDto(Usuario usuario) {

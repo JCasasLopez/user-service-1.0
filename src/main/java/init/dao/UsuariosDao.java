@@ -28,7 +28,5 @@ public interface UsuariosDao extends JpaRepository<Usuario, Integer> {
     void updatePassword(String username, String newPassword);
 	
 	boolean existsByUsername(String username);
-	
-	boolean existsByEmail(String email);
-	
+		
 }
