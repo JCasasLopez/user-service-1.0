@@ -3,6 +3,7 @@ package init.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,12 +42,14 @@ public class UsuariosController {
 	}
 	
 	@DeleteMapping(value="borrarUsuario", produces=MediaType.TEXT_PLAIN_VALUE)
+	@PreAuthorize("#username == authentication.principal.username")
 	public ResponseEntity<String> borrarUsuario(@Valid @RequestParam String username){
 		customUserDetailsManager.deleteUser(username);
 		return ResponseEntity.status(HttpStatus.OK).body("Usuario borrado correctamente");
 	}
 	
 	@PutMapping(value="cambiarPassword", produces=MediaType.TEXT_PLAIN_VALUE)
+	@PreAuthorize("#username == authentication.principal.username")
 	public ResponseEntity<String> cambiarPassword(@Valid @RequestParam  String oldPassword, 
 																		@RequestParam String newPassword){
 		customUserDetailsManager.changePassword(oldPassword, newPassword);
@@ -60,7 +63,8 @@ public class UsuariosController {
 	}
 	
 	@PostMapping(value="crearAdmin")
-	public ResponseEntity<String> crearAdmin(@RequestParam  String username){
+	@PreAuthorize("hasRole('ROLE_SUPERADMIN')")
+	public ResponseEntity<String> crearAdmin(@RequestParam String username){
 		customUserDetailsManager.upgradeUser(customUserDetailsManager.findUser(username));
 		return ResponseEntity.status(HttpStatus.OK).body("Usuario promocionado a ADMIN correctamente");
 	}
