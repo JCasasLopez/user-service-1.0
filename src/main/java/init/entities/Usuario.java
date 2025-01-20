@@ -16,7 +16,6 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name="users")
@@ -49,7 +48,7 @@ public class Usuario {
         inverseJoinColumns=@JoinColumn(name="rol_id", referencedColumnName="idRol"))
 	private Set<Rol> roles;
 
-	public Usuario(@NotBlank @Size(min = 8, max = 20) String username,
+	public Usuario(@NotBlank String username,
 			@NotBlank String password,
 			@NotBlank String nombreCompleto,
 			@NotBlank @Email(message = "El email debe tener un formato válido") String email,

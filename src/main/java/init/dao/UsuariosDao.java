@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import init.entities.Usuario;
 
 @Repository
-public interface UsuariosDao extends JpaRepository<Usuario, Long> {
+public interface UsuariosDao extends JpaRepository<Usuario, Integer> {
 	/*
 	Estos métodos sirven para nuestra implementación personalizada de UserDetailsManager (Spring Security):
 	       DAO     ->     UserDetailsManager
@@ -28,5 +28,7 @@ public interface UsuariosDao extends JpaRepository<Usuario, Long> {
     void updatePassword(String username, String newPassword);
 	
 	boolean existsByUsername(String username);
+	
+	boolean existsByEmail(String email);
 	
 }

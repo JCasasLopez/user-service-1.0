@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,7 +19,9 @@ import init.dao.RolesDao;
 import init.dao.UsuariosDao;
 import init.entities.Rol;
 import init.entities.Usuario;
+import init.exception.EmailAlreadyExistsException;
 import init.exception.RolNotFoundException;
+import init.exception.UsernameAlreadyExistsException;
 import init.utilidades.Mapeador;
 
 @Service
@@ -53,20 +54,25 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 		//Método interno usado por Spring Security durante el proceso de autenticación
 		//No debe exponerse directamente a los usuarios
 		if(usuariosDao.findByUsername(username)==null) {
-			throw new UsernameNotFoundException("Usuario no encontrado" + username);
+			throw new UsernameNotFoundException("Usuario " + username + " no encontrado");
 		}
 		return mapeador.usuarioToUsuarioSecurity(usuariosDao.findByUsername(username));
 	}
 
 	@Override
 	public void createUser(UserDetails user) {
-		//Accesible a cualquiera
-		if(user instanceof UsuarioSecurity) {
+		if (user instanceof UsuarioSecurity) {
 			UsuarioSecurity usuarioSecurity = (UsuarioSecurity) user;
 			Usuario usuario = usuarioSecurity.getUsuario();
+			/*if(usuariosDao.existsByUsername(usuario.getUsername())) {
+				throw new UsernameAlreadyExistsException("Ya existe un usuario con ese username");
+			}
+			if(usuariosDao.existsByEmail(usuario.getEmail())) {
+				throw new EmailAlreadyExistsException("Ya existe un usuario con ese email");
+			}*/
 			usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
 			usuariosDao.save(addRole(usuario, 1));
-		}else {
+		} else {
 			throw new IllegalArgumentException("El objeto UserDetails proporcionado no es compatible");
 		}
 	}
@@ -78,18 +84,16 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 
 	@Override
 	@Transactional
-	@PreAuthorize("authentication.name == #username")
 	public void deleteUser(String username) {
 		//Accesible solo al usuario mismo una vez esté autenticado
 		if(!usuariosDao.existsByUsername(username)) {
-			throw new UsernameNotFoundException("Usuario no encontrado" + username);
+			throw new UsernameNotFoundException(("Usuario " + username + " no encontrado"));
 		}
 		usuariosDao.deleteByUsername(username);
 	}
 
 	@Override
 	@Transactional
-	@PreAuthorize("authentication.name == #username")
 	public void changePassword(String oldPassword, String newPassword) {
 		//Accesible solo al usuario mismo una vez esté autenticado
 		

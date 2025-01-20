@@ -1,14 +1,18 @@
 package init.exception.handler;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+import init.exception.EmailAlreadyExistsException;
+import init.exception.UsernameAlreadyExistsException;
+
+@ControllerAdvice
 public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(UsernameNotFoundException.class)
@@ -29,6 +33,32 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(BadCredentialsException.class)
 	public ResponseEntity<String> handleBadCredentialsException(BadCredentialsException ex){
 		return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(DataIntegrityViolationException.class)
+	public ResponseEntity<String> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+		String message;
+		if(ex.getMessage().contains("users.username")) {
+			message = "Ya existe un usuario con ese username";
+			return new ResponseEntity<>(message, HttpStatus.CONFLICT);
+		}
+		if(ex.getMessage().contains("users.email")) {
+			message = "Ya existe un usuario con ese email";
+			return new ResponseEntity<>(message, HttpStatus.CONFLICT);
+		}else {
+			message = "Se produjo una violación de la integridad de los datos";
+			return new ResponseEntity<>(message, HttpStatus.CONFLICT);
+		}
+	}
+	
+	@ExceptionHandler(EmailAlreadyExistsException.class)
+	public ResponseEntity<String> handleEmailAlreadyExistsException(EmailAlreadyExistsException ex) {
+		return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+	}
+	
+	@ExceptionHandler(UsernameAlreadyExistsException.class)
+	public ResponseEntity<String> handleUsernameAlreadyExistsException(UsernameAlreadyExistsException ex) {
+		return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
 	}
 	
 }
