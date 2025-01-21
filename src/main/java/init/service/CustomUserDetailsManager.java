@@ -119,10 +119,11 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 	}
 	
 	public void upgradeUser(Usuario usuario) {
-		//Este método, solo accesible al "SUPER ADMIN" convierte usuarios normales en "admins"
+		//Este método, solo accesible al "SUPER ADMIN", convierte usuarios normales en "admins"
 		if(usuario.getRoles().size() > 1) {
 			throw new UserAlreadyAdminException("El usuario ya tiene el rol ADMIN");
 		}
 		usuariosDao.save(addRole(usuario, 2));
 	}
+	
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import init.config.security.UsuarioSecurity;
 import init.model.UsuarioDto;
+import init.service.AuthenticationService;
 import init.service.CustomUserDetailsManager;
 import init.utilidades.Mapeador;
 import jakarta.validation.Valid;
@@ -25,12 +26,15 @@ public class UsuariosController {
 	
 	CustomUserDetailsManager customUserDetailsManager;
 	Mapeador mapeador;
+	AuthenticationService authenticationService;
 	
-	public UsuariosController(CustomUserDetailsManager customUserDetailsManager, Mapeador mapeador) {
+	public UsuariosController(CustomUserDetailsManager customUserDetailsManager, Mapeador mapeador,
+														AuthenticationService authenticationService) {
 		this.customUserDetailsManager = customUserDetailsManager;
 		this.mapeador = mapeador;
+		this.authenticationService = authenticationService;
 	}
-	
+
 	//loadUserByUsername() es un método interno usado por Spring Security durante
 	//el proceso de autenticación y no debe exponerse directamente a los usuarios
 	
@@ -67,6 +71,12 @@ public class UsuariosController {
 	public ResponseEntity<String> crearAdmin(@RequestParam String username){
 		customUserDetailsManager.upgradeUser(customUserDetailsManager.findUser(username));
 		return ResponseEntity.status(HttpStatus.OK).body("Usuario promocionado a ADMIN correctamente");
+	}
+	
+	@GetMapping(value="public/login")
+	public ResponseEntity<String> login(@RequestParam String username, @RequestParam String password){
+		String token = authenticationService.login(username, password);
+		return ResponseEntity.status(HttpStatus.OK).body(token);
 	}
 	
 }
