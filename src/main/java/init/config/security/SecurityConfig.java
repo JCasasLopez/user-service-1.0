@@ -15,8 +15,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import init.config.security.filter.JwtAuthenticationFilter;
 
 @Configuration
-@EnableMethodSecurity
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
 	UserDetailsService userDetailsService;
@@ -45,9 +45,9 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(sessMang -> sessMang.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-            .authenticationProvider(daoAuthenticationProvider(userDetailsService, passwordEncoder))
             .authorizeHttpRequests(authorize -> authorize
             							.requestMatchers("/public/**").permitAll() 
+            							.requestMatchers("/saludo", "/borrarUsuario", "/cambiarPassword").authenticated() 
             							.anyRequest().authenticated()
             )
             .build();

@@ -3,6 +3,7 @@ package init.service;
 import java.util.Set;
 
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -75,9 +76,10 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 
 	@Override
 	@Transactional
+	@PreAuthorize("#username == authentication.principal.username")
 	public void deleteUser(String username) {
 		//Accesible solo al usuario mismo una vez esté autenticado
-		if(!usuariosDao.existsByUsername(username)) {
+	    if(!usuariosDao.existsByUsername(username)) {
 			throw new UsernameNotFoundException(("Usuario " + username + " no encontrado"));
 		}
 		usuariosDao.deleteByUsername(username);
@@ -85,6 +87,7 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 
 	@Override
 	@Transactional
+	@PreAuthorize("isAuthenticated()")
 	public void changePassword(String oldPassword, String newPassword) {
 		//Accesible solo al usuario mismo una vez esté autenticado
 		
@@ -118,6 +121,7 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 		throw new UsernameNotFoundException(("Usuario " + username + " no encontrado"));
 	}
 	
+	@PreAuthorize("hasRole('ROLE_SUPERADMIN')")
 	public void upgradeUser(Usuario usuario) {
 		//Este método, solo accesible al "SUPER ADMIN", convierte usuarios normales en "admins"
 		if(usuario.getRoles().size() > 1) {

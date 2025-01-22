@@ -20,8 +20,8 @@ import io.jsonwebtoken.security.Keys;
 @Service
 public class JwtService {
 	
-	//El token expira a los 1 minutos (1*60*1000 milisegundos)
-	private final long expiration = 1 * 60 * 1000;
+	//El token expira a los 30 minutos (30*60*1000 milisegundos)
+	private final long expiration = 30 * 60 * 1000;
 	
 	//@Value("{jwt.secret.key}")
 	private String secretKey = "RXN0YWVzbWljbGF2ZXNlY3JldGFwZXJmZWN0YWNvbnVubW9udG9uZGVieXRlc1ZpbmRlbDM5ISE=";

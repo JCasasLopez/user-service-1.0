@@ -8,7 +8,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import init.config.security.UsuarioSecurity;
+import init.dao.UsuariosDao;
+import init.entities.Usuario;
 import init.service.JwtService;
+import init.utilidades.Mapeador;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,9 +22,13 @@ import jakarta.servlet.http.HttpServletResponse;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	
 	JwtService jwtService;
+	UsuariosDao usuariosDao;
+	Mapeador mapeador;
 	
-	public JwtAuthenticationFilter(JwtService jwtService) {
+	public JwtAuthenticationFilter(JwtService jwtService, UsuariosDao usuariosDao, Mapeador mapeador) {
 		this.jwtService = jwtService;
+		this.usuariosDao = usuariosDao;
+		this.mapeador = mapeador;
 	}
 
 	@Override
@@ -32,13 +40,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	        //Si esta línea no lanza una excepción, significa que el token es válido
 			//por lo tanto, podemos establecer el objeto authentication en el SecurityContextHolder
 	        String username = jwtService.extractPayload(token).getSubject();
-	        Authentication authentication = new UsernamePasswordAuthenticationToken(username, token);
+	        Usuario usuario = usuariosDao.findByUsername(username);
+	        //Spring Security espera un objeto UserDetails (UsuarioSecurity) como principal para que ciertas 
+	        //expresiones de seguridad funcionen correctamente
+	        UsuarioSecurity usuarioSecurity = mapeador.usuarioToUsuarioSecurity(usuario);
+	        Authentication authentication = new UsernamePasswordAuthenticationToken
+	        									(usuarioSecurity, token, usuarioSecurity.getAuthorities());
 	        SecurityContextHolder.getContext().setAuthentication(authentication);
-			filterChain.doFilter(request, response);     
-		} else {
-			filterChain.doFilter(request, response);
-			return;
 		}
+		filterChain.doFilter(request, response);
 	}
 
 }
