@@ -84,11 +84,13 @@ public class UsuariosController {
 	}
 	
 	@GetMapping(value="public/validarToken")
-	public ResponseEntity<String> validarToken(@RequestHeader String token){
-		if(jwtService.validateToken(token)) {
-			return ResponseEntity.status(HttpStatus.OK).body("Token validado correctamente");
-		}
-		return ResponseEntity.status(HttpStatus.OK).body("Token no válido");
+	public ResponseEntity<String> validarToken(@RequestHeader("Authorization") String token){
+		if (token != null && token.startsWith("Bearer ")) {
+	        String tokenLimpio = token.substring(7);
+	        if (jwtService.validateToken(tokenLimpio)) {
+	            return ResponseEntity.status(HttpStatus.OK).body("Token validado correctamente");
+	        }
+	    }
+	    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token no válido o ausente");
 	}
-	
 }
