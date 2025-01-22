@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,6 +18,7 @@ import init.config.security.UsuarioSecurity;
 import init.model.UsuarioDto;
 import init.service.AuthenticationService;
 import init.service.CustomUserDetailsManager;
+import init.service.JwtService;
 import init.utilidades.Mapeador;
 import jakarta.validation.Valid;
 
@@ -27,12 +29,14 @@ public class UsuariosController {
 	CustomUserDetailsManager customUserDetailsManager;
 	Mapeador mapeador;
 	AuthenticationService authenticationService;
+	JwtService jwtService;
 	
 	public UsuariosController(CustomUserDetailsManager customUserDetailsManager, Mapeador mapeador,
-														AuthenticationService authenticationService) {
+			AuthenticationService authenticationService, JwtService jwtService) {
 		this.customUserDetailsManager = customUserDetailsManager;
 		this.mapeador = mapeador;
 		this.authenticationService = authenticationService;
+		this.jwtService = jwtService;
 	}
 
 	//loadUserByUsername() es un método interno usado por Spring Security durante
@@ -77,6 +81,12 @@ public class UsuariosController {
 	public ResponseEntity<String> login(@RequestParam String username, @RequestParam String password){
 		String token = authenticationService.login(username, password);
 		return ResponseEntity.status(HttpStatus.OK).body(token);
+	}
+	
+	@GetMapping(value="public/validar")
+	public ResponseEntity<Boolean> validar(@RequestHeader String token){
+		boolean EsTokenValido = JwtService.validateToken(token);
+		return ResponseEntity.ok(EsTokenValido);
 	}
 	
 }

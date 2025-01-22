@@ -25,7 +25,7 @@ public class AuthenticationService {
 		try {
 			Authentication authenticated = daoAuthenticationProvider.authenticate(authentication);
 	        SecurityContextHolder.getContext().setAuthentication(authenticated);
-	        return jwtService.createTokenJwt();
+	        return jwtService.createToken();
 	        
 		} catch (AuthenticationException ex) {
 	        throw new BadCredentialsException("Las credenciales proporcionadas no son correctas");
