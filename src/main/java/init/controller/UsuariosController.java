@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -83,14 +82,4 @@ public class UsuariosController {
 		return ResponseEntity.status(HttpStatus.OK).body(token);
 	}
 	
-	@GetMapping(value="public/validarToken")
-	public ResponseEntity<String> validarToken(@RequestHeader("Authorization") String token){
-		if (token != null && token.startsWith("Bearer ")) {
-	        String tokenLimpio = token.substring(7);
-	        if (jwtService.validateToken(tokenLimpio)) {
-	            return ResponseEntity.status(HttpStatus.OK).body("Token validado correctamente");
-	        }
-	    }
-	    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token no válido o ausente");
-	}
 }
