@@ -1,7 +1,5 @@
 package init.service;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
-
 import java.util.Base64;
 import java.util.Date;
 import java.util.stream.Collectors;
@@ -27,12 +25,11 @@ public class JwtService {
 	
 	//@Value("{jwt.secret.key}")
 	private String secretKey = "RXN0YWVzbWljbGF2ZXNlY3JldGFwZXJmZWN0YWNvbnVubW9udG9uZGVieXRlc1ZpbmRlbDM5ISE=";
+	byte[] keyBytes = Base64.getDecoder().decode(secretKey);
+    SecretKey clave = Keys.hmacShaKeyFor(keyBytes);
 	
 	public String createToken() {
-		
-        byte[] keyBytes = Base64.getDecoder().decode(secretKey);
-        SecretKey clave = Keys.hmacShaKeyFor(keyBytes);
-        
+		     
         Authentication authenticated = SecurityContextHolder.getContext().getAuthentication();
 		
 		return  	Jwts
@@ -50,20 +47,32 @@ public class JwtService {
 	}
 	
 	public boolean validateToken(String token) {
-		
+		if(extractPayload(token) != null) {
+			return true;
+		}
+		return false;
+	}
+	
+	private Claims extractPayload(String token) {
 		try {
-			Jws<Claims> parsedToken = Jwts.builder()
-					.setSigningKey(clave) 
-					.parseClaimsJws(jwt);
 
-			// Acceder a las claims
-			String subject = parsedToken.getSubject();
-			String issuer = parsedToken.getBody().getIssuer();
-			Date expiration = parsedToken.getBody().getExpiration();
+			Jws<Claims> tokenParseado = Jwts.parser() 	//Configura cómo queremos verificar el token
+					.verifyWith(clave) 					//Establece la clave que se usará para verificar la firma
+					.build() 							//Construye el parser JWT con la configuración especificada
+					.parseSignedClaims(token); 			//Aquí es donde ocurren TODAS las verificaciones 
 
-		} catch (JwtException e) {
-			// Capturar cualquier error de validación
-			System.out.println("Token inválido: " + e.getMessage());
+			return tokenParseado.getPayload();
+
+		} catch (JwtException ex) {
+			
+			if (ex instanceof io.jsonwebtoken.ExpiredJwtException) {
+				throw new JwtException("Token expirado");
+			} else if (ex instanceof io.jsonwebtoken.MalformedJwtException) {
+				throw new JwtException("Token malformado");
+			} else if (ex instanceof io.jsonwebtoken.security.SecurityException) {
+				throw new JwtException("Firma inválida");
+			}
+			throw new JwtException("Error al verificar el token: " + ex.getMessage());
 		}
 	}
 }
