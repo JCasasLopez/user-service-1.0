@@ -53,7 +53,7 @@ public class JwtService {
 		return false;
 	}
 	
-	private Claims extractPayload(String token) {
+	public Claims extractPayload(String token) {
 		try {
 
 			Jws<Claims> tokenParseado = Jwts.parser() 	//Configura cómo queremos verificar el token
