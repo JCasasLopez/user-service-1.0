@@ -85,7 +85,7 @@ public class UsuariosController {
 	
 	@GetMapping(value="public/validarToken")
 	public ResponseEntity<String> validarToken(@RequestHeader String token){
-		if(JwtService.validateToken(token)) {
+		if(jwtService.validateToken(token)) {
 			return ResponseEntity.status(HttpStatus.OK).body("Token validado correctamente");
 		}
 		return ResponseEntity.status(HttpStatus.OK).body("Token no válido");
