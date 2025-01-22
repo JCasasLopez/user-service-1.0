@@ -46,13 +46,6 @@ public class JwtService {
 						.compact();
 	}
 	
-	public boolean validateToken(String token) {
-		if(extractPayload(token) != null) {
-			return true;
-		}
-		return false;
-	}
-	
 	public Claims extractPayload(String token) {
 		try {
 
