@@ -40,6 +40,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	        //Si esta línea no lanza una excepción, significa que el token es válido
 			//por lo tanto, podemos establecer el objeto authentication en el SecurityContextHolder
 	        String username = jwtService.extractPayload(token).getSubject();
+	        //Verifica que el usuario no haya hecho el log out, en cuyo caso sale del filtro
+	        if(jwtService.isUserLoggedOut(token)) {
+	    		filterChain.doFilter(request, response);
+	        }
+	        //Si la "sesión" aún está activa, procede a la autenticación
 	        Usuario usuario = usuariosDao.findByUsername(username);
 	        //Spring Security espera un objeto UserDetails (UsuarioSecurity) como principal para que ciertas 
 	        //expresiones de seguridad funcionen correctamente
