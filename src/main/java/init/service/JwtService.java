@@ -11,6 +11,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import init.dao.TokensDao;
+import init.entities.TokenJwt;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
@@ -19,6 +21,12 @@ import io.jsonwebtoken.security.Keys;
 
 @Service
 public class JwtService {
+	
+	TokensDao tokensDao;
+	
+	public JwtService(TokensDao tokensDao) {
+		this.tokensDao = tokensDao;
+	}
 	
 	//El token expira a los 30 minutos (30*60*1000 milisegundos)
 	private final long expiration = 30 * 60 * 1000;
@@ -32,7 +40,7 @@ public class JwtService {
 		     
         Authentication authenticated = SecurityContextHolder.getContext().getAuthentication();
 		
-		return  	Jwts
+		String token =  Jwts
 						.builder()
 						.header() 
 						.type("JWT")
@@ -44,7 +52,10 @@ public class JwtService {
 						.expiration(new Date(System.currentTimeMillis() + expiration))
 						.signWith(clave, Jwts.SIG.HS256)
 						.compact();
-	}
+		
+		tokensDao.save(new TokenJwt(token));	
+		return token;
+		}
 	
 	public Claims extractPayload(String token) {
 		try {

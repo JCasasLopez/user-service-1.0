@@ -24,8 +24,7 @@ public class TokenJwt {
 	private String token;
 	private boolean isLoggedOut;
 	
-	public TokenJwt(Long id, String token) {
-		this.id = id;
+	public TokenJwt(String token) {
 		this.token = token;
 		this.isLoggedOut = false;
 	}
