@@ -83,4 +83,11 @@ public class JwtService {
 	public boolean isUserLoggedOut(String token) {
 		return tokensDao.findByToken(token).isLoggedOut();
 	}
+	
+	public void logUserOut(String token) {
+		TokenJwt tokenJwt = tokensDao.findByToken(token);
+		if(tokenJwt.isLoggedOut()==false) {
+			tokenJwt.setLoggedOut(true);
+		}
+	}
 }
