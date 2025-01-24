@@ -79,4 +79,8 @@ public class JwtService {
 			throw new JwtException("Error al verificar el token: " + ex.getMessage());
 		}
 	}
+	
+	public boolean isUserLoggedOut(String token) {
+		return tokensDao.findByToken(token).isLoggedOut();
+	}
 }
