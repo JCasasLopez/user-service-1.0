@@ -89,5 +89,6 @@ public class JwtService {
 		if(tokenJwt.isLoggedOut()==false) {
 			tokenJwt.setLoggedOut(true);
 		}
+		tokensDao.save(tokenJwt);
 	}
 }

@@ -34,4 +34,8 @@ public class AuthenticationService {
 		}
 		
 	}
+	
+	public void logout(String token) {
+		jwtService.logUserOut(token);
+	}
 }
