@@ -3,6 +3,7 @@ package init.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -77,6 +78,13 @@ public class UsuariosController {
 	public ResponseEntity<String> login(@RequestParam String username, @RequestParam String password){
 		String token = authenticationService.login(username, password);
 		return ResponseEntity.status(HttpStatus.OK).body(token);
+	}
+	
+	@GetMapping(value="logout")
+	@PreAuthorize("isAuthenticated()")
+	public ResponseEntity<String> logout(){
+		authenticationService.logout();
+		return ResponseEntity.status(HttpStatus.OK).body("El usuario ha abandonado la sesión");
 	}
 	
 }
