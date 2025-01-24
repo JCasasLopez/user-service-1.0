@@ -13,20 +13,21 @@ public class TokenJwt {
 	//El motivo es que la única razón de ser de esta entidad es realizar el proceso de logout:
 	//cuando un usuario se identifica con un token comprobamos que isLoggedOut = true. 
 	//Después, en el filtro se usa el método de JwtService extractPayload() para comprobar que el token 
-	//aún no haya expirado y todo lo demás (por eso no he incluido aquí la fecha de expiración como atributo)
+	//aún no haya expirado y todo lo demás (por eso no he incluido aquí la fecha de expiración como atributo).
 	
 	//Si, en un futuro, quisiéramos realizar más operaciones con el token (búsqueda por usuario, fechas, etc)
-	//un token JWT ya contiene toda la información necesaria dentro del mismo
+	//un token JWT ya contiene toda la información necesaria dentro del mismo.
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	private String token;
 	private boolean isLoggedOut;
 	
-	public TokenJwt(Long id, String token, boolean isLoggedOut) {
+	public TokenJwt(Long id, String token) {
 		this.id = id;
 		this.token = token;
-		this.isLoggedOut = isLoggedOut;
+		this.isLoggedOut = false;
 	}
 
 	public TokenJwt() {
