@@ -81,7 +81,6 @@ public class UsuariosController {
 	
 	@PostMapping(value="logout")
 	public ResponseEntity<String> logout(){
-		System.out.println("*************** controller.logout");
 		authenticationService.logout();
 		return ResponseEntity.status(HttpStatus.OK).body("El usuario ha abandonado la sesión");
 	}

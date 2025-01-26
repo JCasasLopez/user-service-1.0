@@ -88,14 +88,11 @@ public class JwtService {
 		//El endpoint correspondiente está marcado como accesible solo para usuarios autenticados,
 		//por lo que sabemos que el objeto Authentication va a tener las credenciales (en este caso
 		//el token JWT, que está almacenado en SecurityContextHolder como un Object)
-		System.out.println("*************** jwtService.logUserOut");
         String token = (String) SecurityContextHolder.getContext().getAuthentication().getCredentials();
 		TokenJwt tokenJwt = tokensDao.findByToken(token);
 		if(tokenJwt.isLoggedOut()==false) {
 			tokenJwt.setLoggedOut(true);
 		}
 		tokensDao.save(tokenJwt);
-		System.out.println("Llega hasta el FINAL de jwtService.logUserOut");
-
 	}
 }
