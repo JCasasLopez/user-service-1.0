@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import init.exception.InvalidPasswordException;
 import init.exception.UserAlreadyAdminException;
 import init.exception.UserLoggedOutException;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -40,17 +41,13 @@ public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(DataIntegrityViolationException.class)
 	public ResponseEntity<String> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
-		String message;
 		if(ex.getMessage().contains("users.username")) {
-			message = "Ya existe un usuario con ese username";
-			return new ResponseEntity<>(message, HttpStatus.CONFLICT);
+			return new ResponseEntity<>("Ya existe un usuario con ese username", HttpStatus.CONFLICT);
 		}
 		if(ex.getMessage().contains("users.email")) {
-			message = "Ya existe un usuario con ese email";
-			return new ResponseEntity<>(message, HttpStatus.CONFLICT);
+			return new ResponseEntity<>("Ya existe un usuario con ese email", HttpStatus.CONFLICT);
 		}else {
-			message = "Se produjo una violación de la integridad de los datos";
-			return new ResponseEntity<>(message, HttpStatus.CONFLICT);
+			return new ResponseEntity<>("Se produjo una violación de la integridad de los datos", HttpStatus.CONFLICT);
 		}
 	}
 	
@@ -82,5 +79,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserLoggedOutException.class)
     public ResponseEntity<String> handleUserLoggedOutException(UserLoggedOutException ex) {
 		return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
+    
+    @ExceptionHandler(InvalidPasswordException .class)
+    public ResponseEntity<String> handleInvalidPasswordException (InvalidPasswordException  ex) {
+		return new ResponseEntity<>("La contraseña no cumple con los requisitos", HttpStatus.BAD_REQUEST);
     }
 }
