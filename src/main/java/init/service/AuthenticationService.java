@@ -1,5 +1,6 @@
 package init.service;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -35,7 +36,7 @@ public class AuthenticationService {
 		
 	}
 	
-	//@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("isAuthenticated()")
 	public void logout() {
 		jwtService.logUserOut();
 	}
