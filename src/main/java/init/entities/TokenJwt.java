@@ -20,7 +20,7 @@ public class TokenJwt {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long id;
+	private int idToken;
 	private String token;
 	private boolean isLoggedOut;
 	
@@ -33,12 +33,12 @@ public class TokenJwt {
 		super();
 	}
 
-	public Long getId() {
-		return id;
+	public int getIdToken() {
+		return idToken;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setIdToken(int idToken) {
+		this.idToken = idToken;
 	}
 
 	public String getToken() {
@@ -56,5 +56,5 @@ public class TokenJwt {
 	public void setLoggedOut(boolean isLoggedOut) {
 		this.isLoggedOut = isLoggedOut;
 	}
-	
+
 }

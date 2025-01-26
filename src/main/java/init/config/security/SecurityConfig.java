@@ -2,6 +2,7 @@ package init.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -45,9 +46,12 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(sessMang -> sessMang.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+            //Deshabilito LogoutFilter poque prefiero mi implementación personalizada
+            .logout(logout -> logout.disable()) 
             .authorizeHttpRequests(authorize -> authorize
-            							.requestMatchers("/public/**").permitAll() 
-            							.requestMatchers("/saludo", "/borrarUsuario", "/cambiarPassword").authenticated() 
+            							.requestMatchers("public/**").permitAll() 
+            							.requestMatchers("borrarUsuario", "cambiarPassword", 
+            														"crearAdmin", "logout").authenticated()
             							.anyRequest().authenticated()
             )
             .build();

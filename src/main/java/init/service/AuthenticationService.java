@@ -35,7 +35,9 @@ public class AuthenticationService {
 		
 	}
 	
+	//@PreAuthorize("isAuthenticated()")
 	public void logout() {
+		System.out.println("*************** authenticationService.logout");
 		jwtService.logUserOut();
 	}
 }
