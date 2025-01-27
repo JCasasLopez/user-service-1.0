@@ -37,7 +37,8 @@ public class BlockAccountService {
 		usuariosDao.save(usuario);
 	}
 	
-	public void desbloquearCuenta(Usuario usuario) {
+	public void desbloquearCuenta(String username) {
+		Usuario usuario = usuariosDao.findByUsername(username);
 		usuario.setIntentosFallidos(0);
 		usuario.setCuentaBloqueada(false);
 		usuariosDao.save(usuario);
