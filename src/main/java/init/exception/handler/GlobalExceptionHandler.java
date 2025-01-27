@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import init.exception.InvalidPasswordException;
+import init.exception.NoSuchUserException;
 import init.exception.UserAlreadyAdminException;
 import init.exception.UserLoggedOutException;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -83,6 +84,11 @@ public class GlobalExceptionHandler {
     
     @ExceptionHandler(InvalidPasswordException .class)
     public ResponseEntity<String> handleInvalidPasswordException (InvalidPasswordException  ex) {
+		return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+    
+    @ExceptionHandler(NoSuchUserException .class)
+    public ResponseEntity<String> handleNoSuchUserException (NoSuchUserException  ex) {
 		return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }
