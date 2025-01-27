@@ -1,5 +1,6 @@
 package init.entities;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,6 +23,7 @@ public class TokenJwt {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int idToken;
+	@Column(unique=true)
 	private String token;
 	private boolean isLoggedOut;
 	

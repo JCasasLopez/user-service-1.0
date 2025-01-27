@@ -2,6 +2,7 @@ package init.config.security;
 
 import java.io.IOException;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
@@ -28,13 +29,17 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException exception) throws IOException, ServletException {
-		System.out.println("***************** Llega hasta CustomAuthenticationFailureHandler ");
-		String username = (String) request.getAttribute("username");
+		String username = (String) request.getParameter("username");
+		if (username == null || username.isEmpty()) {
+			throw new IllegalArgumentException("El nombre de usuario no puede estar vacío.");
+		}
+
 		Usuario usuario = usuariosDao.findByUsername(username);
-		if(usuario==null) {
+		if (usuario == null) {
 			throw new NoSuchUserException("El usuario " + username + " no existe");
 		}
 		blockAccountService.incrementarIntentosFallidos(usuario);
+		throw new AccessDeniedException ("La contraseña proporcionada no es correcta");
 	}
 
 }

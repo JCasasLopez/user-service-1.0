@@ -8,7 +8,7 @@ import init.entities.Usuario;
 @Service
 public class BlockAccountService {
 	
-	private static final int MAX_INTENTOS_FALLLIDOS = 3;
+	private static final int MAX_INTENTOS_FALLIDOS = 3;
 	
 	UsuariosDao usuariosDao;
 	
@@ -17,16 +17,15 @@ public class BlockAccountService {
 	}
 
 	public void incrementarIntentosFallidos(Usuario usuario) {
-		int intentosFaliidos = usuario.getIntentosFallidos();
-		if(intentosFaliidos > MAX_INTENTOS_FALLLIDOS) {
+		usuario.setIntentosFallidos(usuario.getIntentosFallidos() + 1);
+		if(usuario.getIntentosFallidos() > MAX_INTENTOS_FALLIDOS) {
 			bloquearCuenta(usuario);
 		}
-		usuario.setIntentosFallidos(intentosFaliidos+=1);
 		usuariosDao.save(usuario);
 	}
-	
+
 	public void resetearIntentosFallidos(Usuario usuario) {
-		usuario.setIdUsuario(0);
+		usuario.setIntentosFallidos(0);
 		usuariosDao.save(usuario);
 	}
 	

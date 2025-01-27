@@ -82,8 +82,10 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
     }
     
-    @ExceptionHandler(InvalidPasswordException .class)
-    public ResponseEntity<String> handleInvalidPasswordException (InvalidPasswordException  ex) {
+    //Esta excepción es para el caso de que la contraseña no cumpla los requisitos de seguridad
+    //(una mayúscula, una minúscula, un número y un símbolo)
+    @ExceptionHandler(InvalidPasswordException.class)
+    public ResponseEntity<String> handleInvalidPasswordException (InvalidPasswordException ex) {
 		return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
     

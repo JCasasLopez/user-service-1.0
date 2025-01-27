@@ -41,7 +41,7 @@ public class UsuariosController {
 	//el proceso de autenticación y no debe exponerse directamente a los usuarios
 	
 	//***** RECUERDA INCLUIR UNA LISTA "ROLES" VACÍA EN EL JSON ******
-	@PostMapping(value="altaUsuario", consumes=MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value="/altaUsuario", consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> altaUsuario(@Valid @RequestBody UsuarioDto usuario){
 		authenticationService.passwordValidation(usuario.getPassword());
 		UsuarioSecurity usuarioSecurity = new UsuarioSecurity(mapeador.usuarioDtoToUsuario(usuario));
@@ -49,38 +49,32 @@ public class UsuariosController {
 		return ResponseEntity.status(HttpStatus.CREATED).body("Usuario creado correctamente");
 	}
 	
-	@DeleteMapping(value="borrarUsuario", produces=MediaType.TEXT_PLAIN_VALUE)
+	@DeleteMapping(value="/borrarUsuario", produces=MediaType.TEXT_PLAIN_VALUE)
 	public ResponseEntity<String> borrarUsuario(@Valid @RequestParam String username){
 		customUserDetailsManager.deleteUser(username);
 		return ResponseEntity.status(HttpStatus.OK).body("Usuario borrado correctamente");
 	}
 	
-	@PutMapping(value="cambiarPassword", produces=MediaType.TEXT_PLAIN_VALUE)
+	@PutMapping(value="/cambiarPassword", produces=MediaType.TEXT_PLAIN_VALUE)
 	public ResponseEntity<String> cambiarPassword(@Valid @RequestParam  String oldPassword, 
 																		@RequestParam String newPassword){
 		customUserDetailsManager.changePassword(oldPassword, newPassword);
 		return ResponseEntity.status(HttpStatus.OK).body("Contraseña cambiada correctamente");
 	}
 		
-	@GetMapping(value="usuarioExiste", produces=MediaType.TEXT_PLAIN_VALUE)
+	@GetMapping(value="/usuarioExiste", produces=MediaType.TEXT_PLAIN_VALUE)
 	public ResponseEntity<String> usuarioExiste(@Valid @RequestParam  String username){
 		boolean response = customUserDetailsManager.userExists(username);
 		return ResponseEntity.status(HttpStatus.OK).body(String.valueOf(response));
 	}
 	
-	@PostMapping(value="crearAdmin")
+	@PostMapping(value="/crearAdmin")
 	public ResponseEntity<String> crearAdmin(@RequestParam String username){
 		customUserDetailsManager.upgradeUser(customUserDetailsManager.findUser(username));
 		return ResponseEntity.status(HttpStatus.OK).body("Usuario promocionado a ADMIN correctamente");
 	}
 	
-	@GetMapping(value="login")
-	public ResponseEntity<String> login(@RequestParam String username, @RequestParam String password){
-		String token = authenticationService.login(username, password);
-		return ResponseEntity.status(HttpStatus.OK).body(token);
-	}
-	
-	@PostMapping(value="logout")
+	@PostMapping(value="/logout")
 	public ResponseEntity<String> logout(){
 		authenticationService.logout();
 		return ResponseEntity.status(HttpStatus.OK).body("El usuario ha abandonado la sesión");
