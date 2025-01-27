@@ -19,13 +19,13 @@ public class Mapeador {
 	}
 	
 	public UsuarioDto usuarioToUsuarioDto(Usuario usuario) {
-		return new UsuarioDto(usuario.getIdUsuario(),
-						usuario.getUsername(),
-						usuario.getPassword(),
+		return new UsuarioDto(usuario.getUsername(),
 						usuario.getNombreCompleto(),
 						usuario.getEmail(),
 						usuario.getFechaNacimiento(),
-						usuario.getRoles());
+						usuario.getRoles(),
+						usuario.getIntentosFallidos(),
+						usuario.isCuentaBloqueada());
 	}
 	
 	public UsuarioSecurity usuarioToUsuarioSecurity (Usuario usuario) {

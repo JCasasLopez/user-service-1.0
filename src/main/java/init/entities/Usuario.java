@@ -42,7 +42,7 @@ public class Usuario {
 	@NotNull()
 	private LocalDate fechaNacimiento;
 	
-	//Estos valores no aparecen en los constructores, y se establecen por defecto como 0 y false, respectivamente
+	//Estos valores no aparecen en los constructores; establecen por defecto como 0 y false, respectivamente
 	private int intentosFallidos;
 	private boolean cuentaBloqueada;
 	
