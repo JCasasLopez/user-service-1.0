@@ -31,18 +31,11 @@ public class AuthenticationService {
 
 	public String login(String username, String password) {
 		Authentication authentication = new UsernamePasswordAuthenticationToken(username, password);
-
-		try {
-			//Si esta línea no lanza una excepción, es que las credenciales son correctas,
-			//por lo tanto, podemos establecer el objeto authenticated en el SecurityContextHolder
-			Authentication authenticated = daoAuthenticationProvider.authenticate(authentication);
-			SecurityContextHolder.getContext().setAuthentication(authenticated);
-			return jwtService.createToken();
-
-		} catch (AuthenticationException ex) {
-			throw new BadCredentialsException("Las credenciales proporcionadas no son correctas");
-		}
-
+		//Si esta línea no lanza una excepción, es que las credenciales son correctas,
+		//por lo tanto, podemos establecer el objeto authenticated en el SecurityContextHolder
+		Authentication authenticated = daoAuthenticationProvider.authenticate(authentication);
+		SecurityContextHolder.getContext().setAuthentication(authenticated);
+		return jwtService.createToken();
 	}
 
 	@PreAuthorize("isAuthenticated()")

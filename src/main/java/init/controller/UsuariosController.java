@@ -41,7 +41,7 @@ public class UsuariosController {
 	//el proceso de autenticación y no debe exponerse directamente a los usuarios
 	
 	//***** RECUERDA INCLUIR UNA LISTA "ROLES" VACÍA EN EL JSON ******
-	@PostMapping(value="public/altaUsuario", consumes=MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value="altaUsuario", consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> altaUsuario(@Valid @RequestBody UsuarioDto usuario){
 		authenticationService.passwordValidation(usuario.getPassword());
 		UsuarioSecurity usuarioSecurity = new UsuarioSecurity(mapeador.usuarioDtoToUsuario(usuario));
@@ -62,7 +62,7 @@ public class UsuariosController {
 		return ResponseEntity.status(HttpStatus.OK).body("Contraseña cambiada correctamente");
 	}
 		
-	@GetMapping(value="public/usuarioExiste", produces=MediaType.TEXT_PLAIN_VALUE)
+	@GetMapping(value="usuarioExiste", produces=MediaType.TEXT_PLAIN_VALUE)
 	public ResponseEntity<String> usuarioExiste(@Valid @RequestParam  String username){
 		boolean response = customUserDetailsManager.userExists(username);
 		return ResponseEntity.status(HttpStatus.OK).body(String.valueOf(response));
@@ -74,7 +74,7 @@ public class UsuariosController {
 		return ResponseEntity.status(HttpStatus.OK).body("Usuario promocionado a ADMIN correctamente");
 	}
 	
-	@GetMapping(value="public/login")
+	@GetMapping(value="login")
 	public ResponseEntity<String> login(@RequestParam String username, @RequestParam String password){
 		String token = authenticationService.login(username, password);
 		return ResponseEntity.status(HttpStatus.OK).body(token);

@@ -62,7 +62,7 @@ public class SecurityConfig {
             //Deshabilito LogoutFilter poque voy a usar mi implementación personalizada
             .logout(logout -> logout.disable()) 
             .authorizeHttpRequests(authorize -> authorize
-            							.requestMatchers("public/**").permitAll() 
+            							.requestMatchers("altaUsuario", "usuarioExiste", "login").permitAll() 
             							.requestMatchers("borrarUsuario", "cambiarPassword", 
             														"crearAdmin", "logout").authenticated()
             							.anyRequest().authenticated()
