@@ -42,6 +42,10 @@ public class Usuario {
 	@NotNull()
 	private LocalDate fechaNacimiento;
 	
+	//Estos valores no aparecen en los constructores, y se establecen por defecto como 0 y false, respectivamente
+	private int intentosFallidos;
+	private boolean cuentaBloqueada;
+	
 	@ManyToMany(fetch = FetchType.EAGER) 
     @JoinTable(name="user_roles",
         joinColumns=@JoinColumn(name="user_id", referencedColumnName="idUsuario"),
@@ -58,6 +62,8 @@ public class Usuario {
 		this.nombreCompleto = nombreCompleto;
 		this.email = email;
 		this.fechaNacimiento = fechaNacimiento;
+		this.intentosFallidos = 0;
+		this.cuentaBloqueada = false;
 	}
 	
 	public Usuario(@NotBlank String username, 
@@ -71,6 +77,8 @@ public class Usuario {
 		this.email = email;
 		this.fechaNacimiento = fechaNacimiento;
 		this.roles = roles;
+		this.intentosFallidos = 0;
+		this.cuentaBloqueada = false;
 	}
 
 	public Usuario() {
@@ -132,5 +140,20 @@ public class Usuario {
 	public void setRoles(Set<Rol> roles) {
 		this.roles = roles;
 	}
-	
+
+	public int getIntentosFallidos() {
+		return intentosFallidos;
+	}
+
+	public void setIntentosFallidos(int intentosFallidos) {
+		this.intentosFallidos = intentosFallidos;
+	}
+
+	public boolean isCuentaBloqueada() {
+		return cuentaBloqueada;
+	}
+
+	public void setCuentaBloqueada(boolean cuentaBloqueada) {
+		this.cuentaBloqueada = cuentaBloqueada;
+	}
 }

@@ -11,9 +11,10 @@ import jakarta.persistence.Table;
 public class TokenJwt {
 	//No se ha establecido la relación entre las entidades "Token" y "Usuario" como podría parecer lógico.
 	//El motivo es que la única razón de ser de esta entidad es realizar el proceso de logout:
-	//cuando un usuario se identifica con un token comprobamos que isLoggedOut = true. 
+	//cuando un usuario se identifica con un token comprobamos que isLoggedOut = false. 
 	//Después, en el filtro se usa el método de JwtService extractPayload() para comprobar que el token 
-	//aún no haya expirado y todo lo demás (por eso no he incluido aquí la fecha de expiración como atributo).
+	//aún no haya expirado (así como la firma, etc), en otras palabras, no es estrictamente necesario
+	//a qué usuario pertenece el token.
 	
 	//Si, en un futuro, quisiéramos realizar más operaciones con el token (búsqueda por usuario, fechas, etc)
 	//un token JWT ya contiene toda la información necesaria dentro del mismo.
