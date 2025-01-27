@@ -36,4 +36,10 @@ public class BlockAccountService {
 		usuario.setCuentaBloqueada(true);
 		usuariosDao.save(usuario);
 	}
+	
+	public void desbloquearCuenta(Usuario usuario) {
+		usuario.setIntentosFallidos(0);
+		usuario.setCuentaBloqueada(false);
+		usuariosDao.save(usuario);
+	}
 }
