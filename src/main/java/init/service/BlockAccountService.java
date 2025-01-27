@@ -16,8 +16,7 @@ public class BlockAccountService {
 		this.usuariosDao = usuariosDao;
 	}
 
-	public void incrementarIntentosFallidos(String username) {
-		Usuario usuario = usuariosDao.findByUsername(username);
+	public void incrementarIntentosFallidos(Usuario usuario) {
 		int intentosFaliidos = usuario.getIntentosFallidos();
 		if(intentosFaliidos > MAX_INTENTOS_FALLLIDOS) {
 			bloquearCuenta(usuario);
@@ -26,8 +25,7 @@ public class BlockAccountService {
 		usuariosDao.save(usuario);
 	}
 	
-	public void resetearIntentosFallidos(String username) {
-		Usuario usuario = usuariosDao.findByUsername(username);
+	public void resetearIntentosFallidos(Usuario usuario) {
 		usuario.setIdUsuario(0);
 		usuariosDao.save(usuario);
 	}
