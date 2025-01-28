@@ -9,7 +9,9 @@ import org.springframework.stereotype.Component;
 
 import init.dao.UsuariosDao;
 import init.entities.Usuario;
+import init.exception.NoSuchUserException;
 import init.service.BlockAccountService;
+import init.utilidades.Constants;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -32,12 +34,23 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException exception) throws IOException, ServletException {
 		String username = (String) request.getParameter("username");
-		if (username != null) {
-			Usuario usuario = usuariosDao.findByUsername(username);
+		Usuario usuario = usuariosDao.findByUsername(username);
+		if(usuario == null) {
+			// Aunque esta excepción debería manejarse en el CustomAuthenticationEntryPoint, 
+			//Spring Security no la propaga correctamente, así que se maneja directamente 
+			//en este punto para garantizar que el flujo funcione correctamente 
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+	        response.setContentType("application/json");
+	        response.setCharacterEncoding("UTF-8");
+	        response.getWriter().write("{\"error\": \"No existe el usuario " + username + "\"}");
+	        return;
+		} else {
 			blockAccountService.incrementarIntentosFallidos(usuario);
+			int intentosRestantes = Constants.MAX_INTENTOS_FALLIDOS - usuario.getIntentosFallidos() ;
+			request.setAttribute("intentosRestantes", intentosRestantes);
 		}
 		SecurityContextHolder.clearContext(); 
-	    customAuthenticationEntryPoint.commence(request, response, exception);
+		customAuthenticationEntryPoint.commence(request, response, exception);
 	}
 
 }

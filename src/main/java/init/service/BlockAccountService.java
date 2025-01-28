@@ -4,12 +4,11 @@ import org.springframework.stereotype.Service;
 
 import init.dao.UsuariosDao;
 import init.entities.Usuario;
+import init.utilidades.Constants;
 
 @Service
 public class BlockAccountService {
-	
-	private static final int MAX_INTENTOS_FALLIDOS = 3;
-	
+		
 	UsuariosDao usuariosDao;
 	
 	public BlockAccountService(UsuariosDao usuariosDao) {
@@ -17,10 +16,11 @@ public class BlockAccountService {
 	}
 
 	public void incrementarIntentosFallidos(Usuario usuario) {
-		if(usuario.getIntentosFallidos() >= MAX_INTENTOS_FALLIDOS) {
-			bloquearCuenta(usuario);
-		}
 		usuario.setIntentosFallidos(usuario.getIntentosFallidos() + 1);
+		if(usuario.getIntentosFallidos() >= Constants.MAX_INTENTOS_FALLIDOS) {
+			bloquearCuenta(usuario);
+			return;
+		}
 		usuariosDao.save(usuario);
 	}
 
