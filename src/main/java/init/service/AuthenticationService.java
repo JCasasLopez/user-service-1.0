@@ -29,7 +29,7 @@ public class AuthenticationService {
 		jwtService.logUserOut();
 	}
 
-	public boolean passwordValidation(String password) {
+	public boolean passwordIsValid(String password) {
 		boolean result = pattern.matcher(password).matches();
         if(!result) {
         	throw new InvalidPasswordException("La contraseña no cumple con los requisitos");

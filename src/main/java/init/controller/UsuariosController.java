@@ -43,7 +43,7 @@ public class UsuariosController {
 	//***** RECUERDA INCLUIR UNA LISTA "ROLES" VACÍA EN EL JSON ******
 	@PostMapping(value="/altaUsuario", consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> altaUsuario(@Valid @RequestBody UsuarioDto usuario){
-		authenticationService.passwordValidation(usuario.getPassword());
+		authenticationService.passwordIsValid(usuario.getPassword());
 		UsuarioSecurity usuarioSecurity = new UsuarioSecurity(mapeador.usuarioDtoToUsuario(usuario));
 		customUserDetailsManager.createUser(usuarioSecurity);
 		return ResponseEntity.status(HttpStatus.CREATED).body("Usuario creado correctamente");

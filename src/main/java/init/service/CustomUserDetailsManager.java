@@ -30,13 +30,16 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 	RolesDao rolesDao;
 	Mapeador mapeador;
 	PasswordEncoder passwordEncoder;
+	AuthenticationService authenticationService;
 	
 	public CustomUserDetailsManager(UsuariosDao usuariosDao, Mapeador mapeador, 
-													PasswordEncoder passwordEncoder, RolesDao rolesDao) {
+													PasswordEncoder passwordEncoder, RolesDao rolesDao,
+													AuthenticationService authenticationService) {
 		this.usuariosDao = usuariosDao;
 		this.mapeador = mapeador;
 		this.passwordEncoder = passwordEncoder;
 		this.rolesDao = rolesDao;
+		this.authenticationService = authenticationService;
 	}
 	
 	private Usuario addRole(Usuario usuario, int idRol) {
@@ -89,8 +92,8 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 	@Transactional
 	@PreAuthorize("isAuthenticated()")
 	public void changePassword(String oldPassword, String newPassword) {
-		//Accesible solo al usuario mismo una vez esté autenticado
-		
+		//Si el resultado es falso, lanza una InvalidPasswordException en el método de origen
+		authenticationService.passwordIsValid(newPassword);
 		//Obtenemos el objeto Usuario del Security Context
 	    Authentication usuarioActual = SecurityContextHolder.getContext().getAuthentication();
 	    if (usuarioActual == null) {
