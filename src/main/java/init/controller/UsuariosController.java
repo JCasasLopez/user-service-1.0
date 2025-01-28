@@ -93,4 +93,16 @@ public class UsuariosController {
 				"se ha desbloqueado correctamente");
 	}
 	
+	@GetMapping(value="/usuarioEsAdmin")
+	public ResponseEntity<String> usuarioEsAdmin(@RequestParam String username){
+		boolean usuarioEsAdmin = customUserDetailsManager.isUserAdmin(username);
+		String mensaje;
+	    if (usuarioEsAdmin) {
+	        mensaje = "El usuario " + username + " es administrador.";
+	    } else {
+	        mensaje = "El usuario " + username + " no es administrador.";
+	    }
+	    return ResponseEntity.status(HttpStatus.OK).body(mensaje);
+	}
+	
 }
