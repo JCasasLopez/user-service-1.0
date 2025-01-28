@@ -17,10 +17,10 @@ public class BlockAccountService {
 	}
 
 	public void incrementarIntentosFallidos(Usuario usuario) {
-		usuario.setIntentosFallidos(usuario.getIntentosFallidos() + 1);
-		if(usuario.getIntentosFallidos() > MAX_INTENTOS_FALLIDOS) {
+		if(usuario.getIntentosFallidos() >= MAX_INTENTOS_FALLIDOS) {
 			bloquearCuenta(usuario);
 		}
+		usuario.setIntentosFallidos(usuario.getIntentosFallidos() + 1);
 		usuariosDao.save(usuario);
 	}
 
