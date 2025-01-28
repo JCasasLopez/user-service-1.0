@@ -3,6 +3,7 @@ package init.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import init.config.security.UsuarioSecurity;
 import init.model.UsuarioDto;
 import init.service.AuthenticationService;
+import init.service.BlockAccountService;
 import init.service.CustomUserDetailsManager;
 import init.service.JwtService;
 import init.utilidades.Mapeador;
@@ -28,13 +30,16 @@ public class UsuariosController {
 	Mapeador mapeador;
 	AuthenticationService authenticationService;
 	JwtService jwtService;
+	BlockAccountService blockAccountService;
 	
 	public UsuariosController(CustomUserDetailsManager customUserDetailsManager, Mapeador mapeador,
-			AuthenticationService authenticationService, JwtService jwtService) {
+			AuthenticationService authenticationService, JwtService jwtService,
+			BlockAccountService blockAccountService) {
 		this.customUserDetailsManager = customUserDetailsManager;
 		this.mapeador = mapeador;
 		this.authenticationService = authenticationService;
 		this.jwtService = jwtService;
+		this.blockAccountService = blockAccountService;
 	}
 
 	//loadUserByUsername() es un método interno usado por Spring Security durante
@@ -78,6 +83,14 @@ public class UsuariosController {
 	public ResponseEntity<String> logout(){
 		authenticationService.logout();
 		return ResponseEntity.status(HttpStatus.OK).body("El usuario ha abandonado la sesión");
+	}
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
+	@PostMapping(value="/desbloquearCuenta")
+	public ResponseEntity<String> desbloquearCuenta(@RequestParam String username){
+		blockAccountService.desbloquearCuenta(username);
+		return ResponseEntity.status(HttpStatus.OK).body("La cuenta del usuario " + username +
+				"se ha desbloqueado correctamente");
 	}
 	
 }
