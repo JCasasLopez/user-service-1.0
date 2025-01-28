@@ -14,11 +14,9 @@ import init.entities.Usuario;
 public class UsuarioSecurity implements UserDetails {
 	
 	private final Usuario usuario;
-	private boolean accountNonLocked;
 	
 	public UsuarioSecurity(Usuario usuario) {
 		this.usuario = usuario;
-		this.accountNonLocked = true;
 	}
 	
 	public Usuario getUsuario() {
@@ -47,11 +45,7 @@ public class UsuarioSecurity implements UserDetails {
 
 	@Override
 	public boolean isAccountNonLocked() {
-		return this.accountNonLocked;
-	}
-	
-	public void setIsAccountNonLocked(boolean accountNonLocked) {
-		this.accountNonLocked = accountNonLocked;
+		return !usuario.isCuentaBloqueada();
 	}
 	
 }

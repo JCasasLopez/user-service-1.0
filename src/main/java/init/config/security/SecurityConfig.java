@@ -26,16 +26,19 @@ public class SecurityConfig {
 	JwtAuthenticationFilter jwtAuthenticationFilter;
 	CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 	CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+	CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 	
     public SecurityConfig(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder,
 			JwtAuthenticationFilter jwtAuthenticationFilter,
 			CustomAuthenticationFailureHandler customAuthenticationFailureHandler,
-			CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) {
+			CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler,
+			CustomAuthenticationEntryPoint customAuthenticationEntryPoint) {
 		this.userDetailsService = userDetailsService;
 		this.passwordEncoder = passwordEncoder;
 		this.jwtAuthenticationFilter = jwtAuthenticationFilter;
 		this.customAuthenticationFailureHandler = customAuthenticationFailureHandler;
 		this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
+		this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
 	}
     
 	@Bean
@@ -62,6 +65,8 @@ public class SecurityConfig {
         loginFilter.setFilterProcessesUrl("/login");
         
         http
+        	.exceptionHandling(exceptions -> exceptions
+                .authenticationEntryPoint(customAuthenticationEntryPoint))
             .csrf(csrf -> csrf.disable())
             .sessionManagement(sessMang -> sessMang.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

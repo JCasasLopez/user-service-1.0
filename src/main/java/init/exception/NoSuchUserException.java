@@ -1,6 +1,8 @@
 package init.exception;
 
-public class NoSuchUserException extends RuntimeException{
+import org.springframework.security.core.AuthenticationException;
+
+public class NoSuchUserException extends AuthenticationException{
 	public NoSuchUserException(String message) {
         super(message);
     }
