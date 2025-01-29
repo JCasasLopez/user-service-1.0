@@ -36,21 +36,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 		String authHeader = request.getHeader("Authorization");
 		if (authHeader != null && authHeader.startsWith("Bearer ")) {
-	        String token = authHeader.substring(7);
-	        //Si la "sesión" aún está activa, procede a la autenticación.
-	  
-	        //Si esta línea no lanza una excepción, significa que el token es válido
+			String token = authHeader.substring(7);
+
+			//Si esta línea no lanza una excepción, significa que el token es válido
 			//por lo tanto, podemos establecer el objeto authentication en el SecurityContextHolder
-	        String username = jwtService.extractPayload(token).getSubject();
-	        Usuario usuario = usuariosDao.findByUsername(username);
-	        //Spring Security espera un objeto UserDetails (UsuarioSecurity) como principal para que ciertas 
-	        //expresiones de seguridad funcionen correctamente
-	        UsuarioSecurity usuarioSecurity = mapeador.usuarioToUsuarioSecurity(usuario);
-	        Authentication authentication = new UsernamePasswordAuthenticationToken
-	        									(usuarioSecurity, token, usuarioSecurity.getAuthorities());
-	        SecurityContextHolder.getContext().setAuthentication(authentication);
+			String username = jwtService.extractPayload(token).getSubject();
+			Usuario usuario = usuariosDao.findByUsername(username);
+			
+			//Spring Security espera un objeto UserDetails (UsuarioSecurity) como principal para que ciertas 
+			//expresiones de seguridad funcionen correctamente
+			UsuarioSecurity usuarioSecurity = mapeador.usuarioToUsuarioSecurity(usuario);
+			Authentication authentication = new UsernamePasswordAuthenticationToken
+					(usuarioSecurity, token, usuarioSecurity.getAuthorities());
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+
+			//Si se llama al endpoint "/logout", logUserOut() se encarga de realizar el logout
+			if ("POST".equalsIgnoreCase(request.getMethod()) && request.getServletPath().equals("/logout")) {
+				String mensaje = jwtService.logUserOut();
+				response.setStatus(HttpServletResponse.SC_OK);
+		        response.setContentType("application/json");
+		        response.setCharacterEncoding("UTF-8");
+		        response.getWriter().write("{\"mensaje\": \"" + mensaje + "\"}");
+				return; 
+			}
 
 		}
-	    filterChain.doFilter(request, response);
+		filterChain.doFilter(request, response);
 	}
+
 }

@@ -83,7 +83,7 @@ public class SecurityConfig {
             							.requestMatchers("/altaUsuario", "/usuarioExiste",
             									"/usuarioEsAdmin").permitAll() 
             							.requestMatchers("/borrarUsuario", "/cambiarPassword", 
-            									"/crearAdmin", "/logout", "/desbloquearCuenta").authenticated()
+            									"/crearAdmin", "/desbloquearCuenta").authenticated()
             							.anyRequest().authenticated()
             );
             return http.build();
