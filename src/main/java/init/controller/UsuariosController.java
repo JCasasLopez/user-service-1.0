@@ -75,12 +75,6 @@ public class UsuariosController {
 		return ResponseEntity.status(HttpStatus.OK).body("Usuario promocionado a ADMIN correctamente");
 	}
 	
-	@PostMapping(value="/logout")
-	public ResponseEntity<String> logout(){
-		String mensaje = jwtService.logUserOut();
-		return ResponseEntity.status(HttpStatus.OK).body(mensaje);
-	}
-	
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
 	@PostMapping(value="/desbloquearCuenta")
 	public ResponseEntity<String> desbloquearCuenta(@RequestParam String username){
