@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import init.exception.InvalidPasswordException;
 import init.exception.NoSuchUserException;
 import init.exception.UserAlreadyAdminException;
-import init.exception.UserLoggedOutException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -74,11 +73,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(JwtException.class)
     public ResponseEntity<String> handleJwtException(JwtException ex) {
-		return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
-    }
-    
-    @ExceptionHandler(UserLoggedOutException.class)
-    public ResponseEntity<String> handleUserLoggedOutException(UserLoggedOutException ex) {
 		return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
     }
     

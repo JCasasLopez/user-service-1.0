@@ -82,19 +82,21 @@ public class JwtService {
 		}
 	}
 	
-	public boolean isUserLoggedOut(String token) {
-		return tokensDao.findByToken(token).isLoggedOut();
-	}
-	
-	public void logUserOut() {
-		//El endpoint correspondiente está marcado como accesible solo para usuarios autenticados,
-		//por lo que sabemos que el objeto Authentication va a tener las credenciales (en este caso
-		//el token JWT, que está almacenado en SecurityContextHolder como un Object)
-        String token = (String) SecurityContextHolder.getContext().getAuthentication().getCredentials();
-		TokenJwt tokenJwt = tokensDao.findByToken(token);
-		if(tokenJwt.isLoggedOut()==false) {
+	public boolean logUserOut() {
+		//En los comentarios de más abajo, la palabra "sesión" está entre comillas porque con los 
+		//tokens JWT no hay sesiones como tal, son stateless
+		String token = (String) SecurityContextHolder.getContext().getAuthentication().getCredentials();
+		if(tokensDao.findByToken(token).isLoggedOut()) {
+		//La "sesión" ya estaba inactiva
+			return false;
+		} else { 
+		//La "sesión" aún estaba activa. Se cambia su campo "isLoggedOut" a true, se graba 
+		//y se vacía el SecurityContext
+			TokenJwt tokenJwt = tokensDao.findByToken(token);
 			tokenJwt.setLoggedOut(true);
+			tokensDao.save(tokenJwt);
+			SecurityContextHolder.getContext().setAuthentication(null);
+			return true;
 		}
-		tokensDao.save(tokenJwt);
 	}
 }

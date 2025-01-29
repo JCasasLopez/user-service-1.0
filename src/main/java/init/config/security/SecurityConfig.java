@@ -74,7 +74,10 @@ public class SecurityConfig {
             .sessionManagement(sessMang -> sessMang.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class) 
-            //Deshabilito LogoutFilter poque voy a usar mi implementación personalizada
+            //Deshabilito LogoutFilter poque voy a usar una implementación personalizada, ya que 
+            //no se puede integrar el logout en el flujo estándar de Spring Security cuando usas
+            //tokens JWT, que son "stateless" por definición, así que simplemento invalido los tokens
+            //en la base de datos.
             .logout(logout -> logout.disable()) 
             .authorizeHttpRequests(authorize -> authorize
             							.requestMatchers("/altaUsuario", "/usuarioExiste",

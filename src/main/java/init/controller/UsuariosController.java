@@ -77,8 +77,14 @@ public class UsuariosController {
 	
 	@PostMapping(value="/logout")
 	public ResponseEntity<String> logout(){
-		jwtService.logUserOut();
-		return ResponseEntity.status(HttpStatus.OK).body("El usuario ha abandonado la sesión");
+		boolean respuesta = jwtService.logUserOut();
+		String mensaje;
+		if(respuesta) {
+			mensaje = "El usuario ha abandonado la sesión";
+		} else {
+			mensaje = "La sesión ya estaba inactiva";
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(mensaje);
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")

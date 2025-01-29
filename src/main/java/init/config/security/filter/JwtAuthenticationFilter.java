@@ -11,7 +11,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import init.config.security.UsuarioSecurity;
 import init.dao.UsuariosDao;
 import init.entities.Usuario;
-import init.exception.UserLoggedOutException;
 import init.service.JwtService;
 import init.utilidades.Mapeador;
 import jakarta.servlet.FilterChain;
@@ -39,10 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		if (authHeader != null && authHeader.startsWith("Bearer ")) {
 	        String token = authHeader.substring(7);
 	        //Si la "sesión" aún está activa, procede a la autenticación.
-	        //Si ya no lo está, sale del filtro mediante la excepción UserLoggedOutException.
-	        if(jwtService.isUserLoggedOut(token)) {
-	    		throw new UserLoggedOutException("User is logged out");
-	        }
+	  
 	        //Si esta línea no lanza una excepción, significa que el token es válido
 			//por lo tanto, podemos establecer el objeto authentication en el SecurityContextHolder
 	        String username = jwtService.extractPayload(token).getSubject();

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import init.dao.UsuariosDao;
 import init.entities.Usuario;
-import init.exception.NoSuchUserException;
 import init.service.BlockAccountService;
 import init.utilidades.Constants;
 import jakarta.servlet.ServletException;
