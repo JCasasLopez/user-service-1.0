@@ -1,6 +1,7 @@
 package init.service;
 
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,6 +20,7 @@ import init.dao.RolesDao;
 import init.dao.UsuariosDao;
 import init.entities.Rol;
 import init.entities.Usuario;
+import init.exception.InvalidPasswordException;
 import init.exception.RolNotFoundException;
 import init.exception.UserAlreadyAdminException;
 import init.utilidades.Mapeador;
@@ -26,20 +28,22 @@ import init.utilidades.Mapeador;
 @Service
 public class CustomUserDetailsManager implements UserDetailsManager {
 	
+	//Requisitos: Al menos 8 caracteres, una letra mayúscula, una minúscula, un número y un símbolo
+	private final String PASSWORD_PATTERN =
+			"^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*(),.?\":{}|<>])[A-Za-z\\d!@#$%^&*(),.?\":{}|<>]{8,}$";
+	private final Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
+	
 	UsuariosDao usuariosDao;
 	RolesDao rolesDao;
 	Mapeador mapeador;
 	PasswordEncoder passwordEncoder;
-	AuthenticationService authenticationService;
 	
 	public CustomUserDetailsManager(UsuariosDao usuariosDao, Mapeador mapeador, 
-													PasswordEncoder passwordEncoder, RolesDao rolesDao,
-													AuthenticationService authenticationService) {
+													PasswordEncoder passwordEncoder, RolesDao rolesDao) {
 		this.usuariosDao = usuariosDao;
 		this.mapeador = mapeador;
 		this.passwordEncoder = passwordEncoder;
 		this.rolesDao = rolesDao;
-		this.authenticationService = authenticationService;
 	}
 	
 	private Usuario addRole(Usuario usuario, int idRol) {
@@ -93,7 +97,7 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 	@PreAuthorize("isAuthenticated()")
 	public void changePassword(String oldPassword, String newPassword) {
 		//Si el resultado es falso, lanza una InvalidPasswordException en el método de origen
-		authenticationService.passwordIsValid(newPassword);
+		passwordIsValid(newPassword);
 		//Obtenemos el objeto Usuario del Security Context
 	    Authentication usuarioActual = SecurityContextHolder.getContext().getAuthentication();
 	    if (usuarioActual == null) {
@@ -140,6 +144,14 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 			return true;
 		}
 		return false;
+	}
+	
+	public boolean passwordIsValid(String password) {
+		boolean result = pattern.matcher(password).matches();
+        if(!result) {
+        	throw new InvalidPasswordException("La contraseña no cumple con los requisitos");
+        }
+        return result;
 	}
 	
 }

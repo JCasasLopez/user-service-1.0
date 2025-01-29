@@ -11,7 +11,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import init.config.security.filter.JwtAuthenticationFilter;
@@ -24,9 +27,9 @@ public class SecurityConfig {
 	UserDetailsService userDetailsService;
 	PasswordEncoder passwordEncoder;
 	JwtAuthenticationFilter jwtAuthenticationFilter;
-	CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
-	CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
-	CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+	AuthenticationFailureHandler authenticationFailureHandler;
+	AuthenticationSuccessHandler authenticationSuccessHandler;
+	AuthenticationEntryPoint authenticationEntryPoint;
 	
     public SecurityConfig(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder,
 			JwtAuthenticationFilter jwtAuthenticationFilter,
@@ -36,9 +39,9 @@ public class SecurityConfig {
 		this.userDetailsService = userDetailsService;
 		this.passwordEncoder = passwordEncoder;
 		this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-		this.customAuthenticationFailureHandler = customAuthenticationFailureHandler;
-		this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
-		this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
+		this.authenticationFailureHandler = customAuthenticationFailureHandler;
+		this.authenticationSuccessHandler = customAuthenticationSuccessHandler;
+		this.authenticationEntryPoint = customAuthenticationEntryPoint;
 	}
     
 	@Bean
@@ -60,13 +63,13 @@ public class SecurityConfig {
     	
     	UsernamePasswordAuthenticationFilter loginFilter = new UsernamePasswordAuthenticationFilter();
         loginFilter.setAuthenticationManager(authenticationManager());
-        loginFilter.setAuthenticationSuccessHandler(customAuthenticationSuccessHandler);
-        loginFilter.setAuthenticationFailureHandler(customAuthenticationFailureHandler);
+        loginFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
+        loginFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
         loginFilter.setFilterProcessesUrl("/login");
         
         http
         	.exceptionHandling(exceptions -> exceptions
-                .authenticationEntryPoint(customAuthenticationEntryPoint))
+                .authenticationEntryPoint(authenticationEntryPoint))
             .csrf(csrf -> csrf.disable())
             .sessionManagement(sessMang -> sessMang.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

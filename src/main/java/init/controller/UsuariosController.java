@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import init.config.security.UsuarioSecurity;
 import init.model.UsuarioDto;
-import init.service.AuthenticationService;
 import init.service.BlockAccountService;
 import init.service.CustomUserDetailsManager;
 import init.service.JwtService;
@@ -28,16 +27,13 @@ public class UsuariosController {
 	
 	CustomUserDetailsManager customUserDetailsManager;
 	Mapeador mapeador;
-	AuthenticationService authenticationService;
 	JwtService jwtService;
 	BlockAccountService blockAccountService;
 	
 	public UsuariosController(CustomUserDetailsManager customUserDetailsManager, Mapeador mapeador,
-			AuthenticationService authenticationService, JwtService jwtService,
-			BlockAccountService blockAccountService) {
+			JwtService jwtService, BlockAccountService blockAccountService) {
 		this.customUserDetailsManager = customUserDetailsManager;
 		this.mapeador = mapeador;
-		this.authenticationService = authenticationService;
 		this.jwtService = jwtService;
 		this.blockAccountService = blockAccountService;
 	}
@@ -48,7 +44,7 @@ public class UsuariosController {
 	//***** RECUERDA INCLUIR UNA LISTA "ROLES" VACÍA EN EL JSON ******
 	@PostMapping(value="/altaUsuario", consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> altaUsuario(@Valid @RequestBody UsuarioDto usuario){
-		authenticationService.passwordIsValid(usuario.getPassword());
+		customUserDetailsManager.passwordIsValid(usuario.getPassword());
 		UsuarioSecurity usuarioSecurity = new UsuarioSecurity(mapeador.usuarioDtoToUsuario(usuario));
 		customUserDetailsManager.createUser(usuarioSecurity);
 		return ResponseEntity.status(HttpStatus.CREATED).body("Usuario creado correctamente");
@@ -81,7 +77,7 @@ public class UsuariosController {
 	
 	@PostMapping(value="/logout")
 	public ResponseEntity<String> logout(){
-		authenticationService.logout();
+		jwtService.logUserOut();
 		return ResponseEntity.status(HttpStatus.OK).body("El usuario ha abandonado la sesión");
 	}
 	
