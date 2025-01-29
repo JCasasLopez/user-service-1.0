@@ -3,7 +3,6 @@ package init.service;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
@@ -58,10 +57,7 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		//Método interno usado por Spring Security durante el proceso de autenticación
 		//No debe exponerse directamente a los usuarios
-		if(usuariosDao.findByUsername(username)==null) {
-			throw new UsernameNotFoundException("Usuario " + username + " no encontrado");
-		}
-		return mapeador.usuarioToUsuarioSecurity(usuariosDao.findByUsername(username));
+		return mapeador.usuarioToUsuarioSecurity(findUser(username));
 	}
 
 	@Override
@@ -86,9 +82,7 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 	@PreAuthorize("#username == authentication.principal.username")
 	public void deleteUser(String username) {
 		//Accesible solo al usuario mismo una vez esté autenticado
-	    if(!usuariosDao.existsByUsername(username)) {
-			throw new UsernameNotFoundException(("Usuario " + username + " no encontrado"));
-		}
+		findUser(username);
 		usuariosDao.deleteByUsername(username);
 	}
 
@@ -102,10 +96,9 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 		//para usuarios autenticados (ver securityFilterChain)
 	    Authentication usuarioActual = SecurityContextHolder.getContext().getAuthentication();
 	    String username = usuarioActual.getName();
-	    Usuario usuario = usuariosDao.findByUsername(username);
 	    
 	    //Comprobamos que la contraseña pasada como parámetro sea la misma que figura en la base de datos
-	    if(!passwordEncoder.matches(oldPassword, usuario.getPassword())) {
+	    if(!passwordEncoder.matches(oldPassword, findUser(username).getPassword())) {
 	        throw new BadCredentialsException("La contraseña actual no coincide con la que figura en la base de datos");
 	    }
 	    
@@ -120,10 +113,12 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 	}
 	
 	public Usuario findUser(String username) {
+		//Todas las llamadas solicitando el objeto Usuario a partir del username, se centralizan 
+		//en este método
 		if(usuariosDao.findByUsername(username)!=null) {
 			return usuariosDao.findByUsername(username);
 		}
-		throw new UsernameNotFoundException(("Usuario " + username + " no encontrado"));
+		throw new UsernameNotFoundException(("El usuario " + username + " no existe en la base de datos"));
 	}
 	
 	@PreAuthorize("hasRole('ROLE_SUPERADMIN')")
@@ -138,7 +133,7 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 	public boolean isUserAdmin(String username) {
 		//Al usuario se le asigna por defecto el role de usuario (ROLE_USER), por tanto, cuando
 		//la colección de roles tiene más de un rol, significa que el usuario es también ADMIN.
-		if(usuariosDao.findByUsername(username).getRoles().size() > 1) {
+		if(findUser(username).getRoles().size() > 1) {
 			return true;
 		}
 		return false;
