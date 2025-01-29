@@ -86,7 +86,7 @@ public class UsuariosController {
 	public ResponseEntity<String> desbloquearCuenta(@RequestParam String username){
 		blockAccountService.desbloquearCuenta(username);
 		return ResponseEntity.status(HttpStatus.OK).body("La cuenta del usuario " + username +
-				"se ha desbloqueado correctamente");
+				"se ha sido desbloqueada correctamente");
 	}
 	
 	@GetMapping(value="/usuarioEsAdmin")

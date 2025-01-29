@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import init.dao.UsuariosDao;
 import init.entities.Usuario;
+import init.exception.NoSuchUserException;
 import init.utilidades.Constants;
 
 @Service
@@ -36,6 +37,9 @@ public class BlockAccountService {
 	
 	public void desbloquearCuenta(String username) {
 		Usuario usuario = usuariosDao.findByUsername(username);
+		if(usuario == null) {
+			throw new NoSuchUserException("El usuario " + username + " no existe");
+		}
 		usuario.setIntentosFallidos(0);
 		usuario.setCuentaBloqueada(false);
 		usuariosDao.save(usuario);
