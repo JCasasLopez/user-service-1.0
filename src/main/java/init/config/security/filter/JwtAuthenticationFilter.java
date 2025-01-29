@@ -37,6 +37,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		String authHeader = request.getHeader("Authorization");
 		if (authHeader != null && authHeader.startsWith("Bearer ")) {
 			String token = authHeader.substring(7);
+			
+			//Si se llama a "/logout", logUserOut() se encarga de realizar el logout
+			if ("POST".equalsIgnoreCase(request.getMethod()) && request.getServletPath().equals("/logout")) {
+				String mensaje = jwtService.logUserOut(token);
+				response.setStatus(HttpServletResponse.SC_OK);
+		        response.setContentType("application/json");
+		        response.setCharacterEncoding("UTF-8");
+		        response.getWriter().write("{\"mensaje\": \"" + mensaje + "\"}");
+				return; 
+			}
 
 			//Si esta línea no lanza una excepción, significa que el token es válido
 			//por lo tanto, podemos establecer el objeto authentication en el SecurityContextHolder
@@ -49,17 +59,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			Authentication authentication = new UsernamePasswordAuthenticationToken
 					(usuarioSecurity, token, usuarioSecurity.getAuthorities());
 			SecurityContextHolder.getContext().setAuthentication(authentication);
-
-			//Si se llama al endpoint "/logout", logUserOut() se encarga de realizar el logout
-			if ("POST".equalsIgnoreCase(request.getMethod()) && request.getServletPath().equals("/logout")) {
-				String mensaje = jwtService.logUserOut();
-				response.setStatus(HttpServletResponse.SC_OK);
-		        response.setContentType("application/json");
-		        response.setCharacterEncoding("UTF-8");
-		        response.getWriter().write("{\"mensaje\": \"" + mensaje + "\"}");
-				return; 
-			}
-
 		}
 		filterChain.doFilter(request, response);
 	}
