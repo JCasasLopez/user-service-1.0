@@ -94,21 +94,19 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 
 	@Override
 	@Transactional
-	@PreAuthorize("isAuthenticated()")
 	public void changePassword(String oldPassword, String newPassword) {
 		//Si el resultado es falso, lanza una InvalidPasswordException en el método de origen
 		passwordIsValid(newPassword);
-		//Obtenemos el objeto Usuario del Security Context
+		//Obtenemos el objeto Usuario del Security Context, sabemos que este usuario existe 
+		//y tiene  que estar en el SecurityContext porque este método sólo es accesible 
+		//para usuarios autenticados (ver securityFilterChain)
 	    Authentication usuarioActual = SecurityContextHolder.getContext().getAuthentication();
-	    if (usuarioActual == null) {
-	        throw new AccessDeniedException("No hay usuario autenticado");
-	    }
 	    String username = usuarioActual.getName();
 	    Usuario usuario = usuariosDao.findByUsername(username);
 	    
 	    //Comprobamos que la contraseña pasada como parámetro sea la misma que figura en la base de datos
 	    if(!passwordEncoder.matches(oldPassword, usuario.getPassword())) {
-	        throw new BadCredentialsException("La contraseña proporcionada no es correcta");
+	        throw new BadCredentialsException("La contraseña actual no coincide con la que figura en la base de datos");
 	    }
 	    
 	    //Guardamos la nueva contraseña en la base de datos, asegurándonos de que esté codificada
