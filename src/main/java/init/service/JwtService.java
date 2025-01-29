@@ -82,13 +82,13 @@ public class JwtService {
 		}
 	}
 	
-	public boolean logUserOut() {
+	public String logUserOut() {
 		//En los comentarios de más abajo, la palabra "sesión" está entre comillas porque con los 
 		//tokens JWT no hay sesiones como tal, son stateless
 		String token = (String) SecurityContextHolder.getContext().getAuthentication().getCredentials();
 		if(tokensDao.findByToken(token).isLoggedOut()) {
 		//La "sesión" ya estaba inactiva
-			return false;
+			return "La sesión ya estaba inactiva";
 		} else { 
 		//La "sesión" aún estaba activa. Se cambia su campo "isLoggedOut" a true, se graba 
 		//y se vacía el SecurityContext
@@ -96,7 +96,7 @@ public class JwtService {
 			tokenJwt.setLoggedOut(true);
 			tokensDao.save(tokenJwt);
 			SecurityContextHolder.getContext().setAuthentication(null);
-			return true;
+			return "El usuario ha abandonado la sesión";
 		}
 	}
 }

@@ -77,13 +77,7 @@ public class UsuariosController {
 	
 	@PostMapping(value="/logout")
 	public ResponseEntity<String> logout(){
-		boolean respuesta = jwtService.logUserOut();
-		String mensaje;
-		if(respuesta) {
-			mensaje = "El usuario ha abandonado la sesión";
-		} else {
-			mensaje = "La sesión ya estaba inactiva";
-		}
+		String mensaje = jwtService.logUserOut();
 		return ResponseEntity.status(HttpStatus.OK).body(mensaje);
 	}
 	
