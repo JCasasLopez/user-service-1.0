@@ -1,15 +1,12 @@
 package init.config.security;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import init.dao.UsuariosDao;
-import init.entities.StandardResponse;
 import init.entities.Usuario;
 import init.service.BlockAccountService;
 import init.service.JwtService;
