@@ -36,8 +36,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 		//el valor de la variable intentosRestantes va a ser null, lo que provocará una 
 		//NullPointerException que manejamos aquí
 		if(intentosRestantes == null) {
-			standardResponseHandler.handleResponse(response, 500, 
-											"Error no relacionado con la autenticación", null);
+			standardResponseHandler.handleResponse(response, 500, "Error desconocido", null);
 			return;
 		} else {
 			intentos = (Integer) intentosRestantes;
