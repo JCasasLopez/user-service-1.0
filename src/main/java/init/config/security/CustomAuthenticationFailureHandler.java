@@ -1,23 +1,17 @@
 package init.config.security;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
 import init.dao.UsuariosDao;
-import init.entities.StandardResponse;
 import init.entities.Usuario;
 import init.service.BlockAccountService;
 import init.utilidades.Constants;
+import init.utilidades.StandardResponseHandler;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,16 +22,15 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
 	BlockAccountService blockAccountService;
 	UsuariosDao usuariosDao; 
 	CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
-	ObjectMapper objectMapper;
+	StandardResponseHandler standardResponseHandler;
 
 	public CustomAuthenticationFailureHandler(BlockAccountService blockAccountService, 
-			UsuariosDao usuariosDao, CustomAuthenticationEntryPoint customAuthenticationEntryPoint) {
+			UsuariosDao usuariosDao, CustomAuthenticationEntryPoint customAuthenticationEntryPoint,
+			StandardResponseHandler standardResponseHandler) {
 		this.blockAccountService = blockAccountService;
 		this.usuariosDao = usuariosDao;
 		this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
-		this.objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+		this.standardResponseHandler = standardResponseHandler;
 	}
 
 	@Override
@@ -49,13 +42,8 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
 			// Aunque esta excepción debería manejarse en el CustomAuthenticationEntryPoint, 
 			//Spring Security no la propaga correctamente, así que se maneja directamente 
 			//en este punto para garantizar que el flujo funcione correctamente 
-			response.setContentType("application/json");
-	        response.setCharacterEncoding("UTF-8");
-			StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), 
-							"No existe el usuario " + username, null, HttpStatus.NOT_FOUND);
-			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-			String jsonResponse = objectMapper.writeValueAsString(respuesta);
-	        response.getWriter().write(jsonResponse);
+			standardResponseHandler.handleResponse(response, 404, "No existe el usuario " + username, 
+																							null);
 	        return;
 		} else {
 			blockAccountService.incrementarIntentosFallidos(usuario);
