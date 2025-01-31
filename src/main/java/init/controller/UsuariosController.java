@@ -1,5 +1,7 @@
 package init.controller;
 
+import java.time.LocalDateTime;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import init.config.security.UsuarioSecurity;
+import init.entities.StandardResponse;
 import init.model.UsuarioDto;
 import init.service.BlockAccountService;
 import init.service.CustomUserDetailsManager;
@@ -43,48 +46,57 @@ public class UsuariosController {
 
 	//***** RECUERDA INCLUIR UNA LISTA "ROLES" VACÍA EN EL JSON ******
 	@PostMapping(value="/altaUsuario", consumes=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> altaUsuario(@Valid @RequestBody UsuarioDto usuario){
+	public ResponseEntity<StandardResponse> altaUsuario(@Valid @RequestBody UsuarioDto usuario){
 		customUserDetailsManager.passwordIsValid(usuario.getPassword());
 		UsuarioSecurity usuarioSecurity = new UsuarioSecurity(mapeador.usuarioDtoToUsuario(usuario));
 		customUserDetailsManager.createUser(usuarioSecurity);
-		return ResponseEntity.status(HttpStatus.CREATED).body("Usuario creado correctamente");
+		StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), "Usuario creado correctamente", null,
+																				HttpStatus.OK);
+		return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
 	}
 
 	@DeleteMapping(value="/borrarUsuario", produces=MediaType.TEXT_PLAIN_VALUE)
-	public ResponseEntity<String> borrarUsuario(@Valid @RequestParam String username){
+	public ResponseEntity<StandardResponse> borrarUsuario(@Valid @RequestParam String username){
 		customUserDetailsManager.deleteUser(username);
-		return ResponseEntity.status(HttpStatus.OK).body("Usuario borrado correctamente");
+		StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), "Usuario borrado correctamente", null,
+																		HttpStatus.OK);
+	    return ResponseEntity.status(HttpStatus.OK).body(respuesta);
 	}
 
 	@PutMapping(value="/cambiarPassword", produces=MediaType.TEXT_PLAIN_VALUE)
-	public ResponseEntity<String> cambiarPassword(@Valid @RequestParam  String oldPassword, 
+	public ResponseEntity<StandardResponse> cambiarPassword(@Valid @RequestParam  String oldPassword, 
 			@RequestParam String newPassword){
 		customUserDetailsManager.changePassword(oldPassword, newPassword);
-		return ResponseEntity.status(HttpStatus.OK).body("Contraseña cambiada correctamente");
+		StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), "Contraseña cambiada correctamente", 
+																		null, HttpStatus.OK);
+		return ResponseEntity.status(HttpStatus.OK).body(respuesta);
 	}
 
-	@GetMapping(value="/usuarioExiste", produces=MediaType.TEXT_PLAIN_VALUE)
+	/*@GetMapping(value="/usuarioExiste", produces=MediaType.TEXT_PLAIN_VALUE)
 	public ResponseEntity<String> usuarioExiste(@Valid @RequestParam  String username){
 		boolean response = customUserDetailsManager.userExists(username);
 		return ResponseEntity.status(HttpStatus.OK).body(String.valueOf(response));
-	}
+	}*/
 
 	@PostMapping(value="/crearAdmin")
-	public ResponseEntity<String> crearAdmin(@RequestParam String username){
+	public ResponseEntity<StandardResponse> crearAdmin(@RequestParam String username){
 		customUserDetailsManager.upgradeUser(customUserDetailsManager.findUser(username));
-		return ResponseEntity.status(HttpStatus.OK).body("Usuario promocionado a ADMIN correctamente");
+		StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), "Usuario promocionado a ADMIN correctamente", 
+				null, HttpStatus.OK);
+		return ResponseEntity.status(HttpStatus.OK).body(respuesta);
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
 	@PostMapping(value="/desbloquearCuenta")
-	public ResponseEntity<String> desbloquearCuenta(@RequestParam String username){
+	public ResponseEntity<StandardResponse> desbloquearCuenta(@RequestParam String username){
 		blockAccountService.desbloquearCuenta(username);
-		return ResponseEntity.status(HttpStatus.OK).body("La cuenta del usuario " + username +
-				"se ha sido desbloqueada correctamente");
+		StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), "La cuenta del usuario " + username +
+				"se ha sido desbloqueada correctamente", null, HttpStatus.OK);
+		return ResponseEntity.status(HttpStatus.OK).body(respuesta);
 	}
 
 	@GetMapping(value="/usuarioEsAdmin")
-	public ResponseEntity<String> usuarioEsAdmin(@RequestParam String username){
+	public ResponseEntity<StandardResponse> usuarioEsAdmin(@RequestParam String username){
 		boolean usuarioEsAdmin = customUserDetailsManager.isUserAdmin(username);
 		String mensaje;
 		if (usuarioEsAdmin) {
@@ -92,6 +104,7 @@ public class UsuariosController {
 		} else {
 			mensaje = "El usuario " + username + " no es administrador.";
 		}
-		return ResponseEntity.status(HttpStatus.OK).body(mensaje);
+		StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), mensaje, null, HttpStatus.OK);
+		return ResponseEntity.status(HttpStatus.OK).body(respuesta);
 	}
 }

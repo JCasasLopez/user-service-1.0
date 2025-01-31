@@ -4,21 +4,21 @@ import java.time.LocalDateTime;
 
 import org.springframework.http.HttpStatus;
 
-public class ApiError {
+public class StandardResponse {
 	
 	private LocalDateTime timestamp;
 	private String mensaje;
 	private String detalles;
 	private HttpStatus status;
 	
-	public ApiError(LocalDateTime timestamp, String mensaje, String detalles, HttpStatus status) {
+	public StandardResponse(LocalDateTime timestamp, String mensaje, String detalles, HttpStatus status) {
 		this.timestamp = timestamp;
 		this.mensaje = mensaje;
 		this.detalles = detalles;
 		this.status = status;
 	}
 
-	public ApiError() {
+	public StandardResponse() {
 		super();
 	}
 
