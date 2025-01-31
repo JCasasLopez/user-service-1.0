@@ -15,9 +15,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
-	
+
 	UsuariosDao usuariosdao;
-	
+
 	public CustomAuthenticationEntryPoint(UsuariosDao usuariosdao) {
 		this.usuariosdao = usuariosdao;
 	}
@@ -28,7 +28,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
 		int intentosRestantes = (Integer) request.getAttribute("intentosRestantes");
-				
+
 		if (authException instanceof LockedException) {
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 			response.getWriter().write("{\"error\": \"La cuenta está bloqueada. Contacte con soporte.\"}");
@@ -43,9 +43,9 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 				response.getWriter().write("{\"error\": \"Credenciales incorrectas. Su cuenta ha sido bloqueada\"}");
 			}
 
-	} else {
-		response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-		response.getWriter().write("{\"error\": \"Ocurrió un error desconocido.\"}");
+		} else {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().write("{\"error\": \"Ocurrió un error desconocido.\"}");
+		}
 	}
-}
 }

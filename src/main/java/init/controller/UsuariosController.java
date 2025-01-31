@@ -24,12 +24,12 @@ import jakarta.validation.Valid;
 @CrossOrigin("*")
 @RestController
 public class UsuariosController {
-	
+
 	CustomUserDetailsManager customUserDetailsManager;
 	Mapeador mapeador;
 	JwtService jwtService;
 	BlockAccountService blockAccountService;
-	
+
 	public UsuariosController(CustomUserDetailsManager customUserDetailsManager, Mapeador mapeador,
 			JwtService jwtService, BlockAccountService blockAccountService) {
 		this.customUserDetailsManager = customUserDetailsManager;
@@ -40,7 +40,7 @@ public class UsuariosController {
 
 	//loadUserByUsername() es un método interno usado por Spring Security durante
 	//el proceso de autenticación y no debe exponerse directamente a los usuarios
-	
+
 	//***** RECUERDA INCLUIR UNA LISTA "ROLES" VACÍA EN EL JSON ******
 	@PostMapping(value="/altaUsuario", consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> altaUsuario(@Valid @RequestBody UsuarioDto usuario){
@@ -49,32 +49,32 @@ public class UsuariosController {
 		customUserDetailsManager.createUser(usuarioSecurity);
 		return ResponseEntity.status(HttpStatus.CREATED).body("Usuario creado correctamente");
 	}
-	
+
 	@DeleteMapping(value="/borrarUsuario", produces=MediaType.TEXT_PLAIN_VALUE)
 	public ResponseEntity<String> borrarUsuario(@Valid @RequestParam String username){
 		customUserDetailsManager.deleteUser(username);
 		return ResponseEntity.status(HttpStatus.OK).body("Usuario borrado correctamente");
 	}
-	
+
 	@PutMapping(value="/cambiarPassword", produces=MediaType.TEXT_PLAIN_VALUE)
 	public ResponseEntity<String> cambiarPassword(@Valid @RequestParam  String oldPassword, 
-																		@RequestParam String newPassword){
+			@RequestParam String newPassword){
 		customUserDetailsManager.changePassword(oldPassword, newPassword);
 		return ResponseEntity.status(HttpStatus.OK).body("Contraseña cambiada correctamente");
 	}
-		
+
 	@GetMapping(value="/usuarioExiste", produces=MediaType.TEXT_PLAIN_VALUE)
 	public ResponseEntity<String> usuarioExiste(@Valid @RequestParam  String username){
 		boolean response = customUserDetailsManager.userExists(username);
 		return ResponseEntity.status(HttpStatus.OK).body(String.valueOf(response));
 	}
-	
+
 	@PostMapping(value="/crearAdmin")
 	public ResponseEntity<String> crearAdmin(@RequestParam String username){
 		customUserDetailsManager.upgradeUser(customUserDetailsManager.findUser(username));
 		return ResponseEntity.status(HttpStatus.OK).body("Usuario promocionado a ADMIN correctamente");
 	}
-	
+
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
 	@PostMapping(value="/desbloquearCuenta")
 	public ResponseEntity<String> desbloquearCuenta(@RequestParam String username){
@@ -82,17 +82,16 @@ public class UsuariosController {
 		return ResponseEntity.status(HttpStatus.OK).body("La cuenta del usuario " + username +
 				"se ha sido desbloqueada correctamente");
 	}
-	
+
 	@GetMapping(value="/usuarioEsAdmin")
 	public ResponseEntity<String> usuarioEsAdmin(@RequestParam String username){
 		boolean usuarioEsAdmin = customUserDetailsManager.isUserAdmin(username);
 		String mensaje;
-	    if (usuarioEsAdmin) {
-	        mensaje = "El usuario " + username + " es administrador.";
-	    } else {
-	        mensaje = "El usuario " + username + " no es administrador.";
-	    }
-	    return ResponseEntity.status(HttpStatus.OK).body(mensaje);
+		if (usuarioEsAdmin) {
+			mensaje = "El usuario " + username + " es administrador.";
+		} else {
+			mensaje = "El usuario " + username + " no es administrador.";
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(mensaje);
 	}
-	
 }
