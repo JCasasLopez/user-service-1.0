@@ -99,14 +99,8 @@ public class UsuariosController {
 	@GetMapping(value="/usuarioEsAdmin")
 	public ResponseEntity<StandardResponse> usuarioEsAdmin(@RequestParam String username){
 		boolean usuarioEsAdmin = customUserDetailsManager.isUserAdmin(username);
-		String mensaje;
-		if (usuarioEsAdmin) {
-			mensaje = "El usuario " + username + " es administrador.";
-		} else {
-			mensaje = "El usuario " + username + " no es administrador.";
-		}
-		StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), mensaje, null, 
-																					HttpStatus.OK);
+		StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), 
+												String.valueOf(usuarioEsAdmin), null, HttpStatus.OK);
 		return ResponseEntity.status(HttpStatus.OK).body(respuesta);
 	}
 }
