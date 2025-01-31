@@ -82,6 +82,10 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 	@PreAuthorize("#username == authentication.principal.username")
 	public void deleteUser(String username) {
 		//Accesible solo al usuario mismo una vez esté autenticado
+		System.out.println("Username: " + username);
+		String nombre = SecurityContextHolder.getContext().getAuthentication().getName();
+		System.out.println("SecurityContextHolder: " + nombre);
+
 		findUser(username);
 		usuariosDao.deleteByUsername(username);
 	}

@@ -55,20 +55,20 @@ public class UsuariosController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
 	}
 
-	@DeleteMapping(value="/borrarUsuario", produces=MediaType.TEXT_PLAIN_VALUE)
+	@DeleteMapping(value="/borrarUsuario", produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<StandardResponse> borrarUsuario(@Valid @RequestParam String username){
 		customUserDetailsManager.deleteUser(username);
-		StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), "Usuario borrado correctamente", null,
-																		HttpStatus.OK);
+		StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), 
+										"Usuario borrado correctamente", null, HttpStatus.OK);
 	    return ResponseEntity.status(HttpStatus.OK).body(respuesta);
 	}
 
-	@PutMapping(value="/cambiarPassword", produces=MediaType.TEXT_PLAIN_VALUE)
+	@PutMapping(value="/cambiarPassword", produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<StandardResponse> cambiarPassword(@Valid @RequestParam  String oldPassword, 
 			@RequestParam String newPassword){
 		customUserDetailsManager.changePassword(oldPassword, newPassword);
-		StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), "Contraseña cambiada correctamente", 
-																		null, HttpStatus.OK);
+		StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), 
+									"Contraseña cambiada correctamente", null, HttpStatus.OK);
 		return ResponseEntity.status(HttpStatus.OK).body(respuesta);
 	}
 
@@ -81,8 +81,8 @@ public class UsuariosController {
 	@PostMapping(value="/crearAdmin")
 	public ResponseEntity<StandardResponse> crearAdmin(@RequestParam String username){
 		customUserDetailsManager.upgradeUser(customUserDetailsManager.findUser(username));
-		StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), "Usuario promocionado a ADMIN correctamente", 
-				null, HttpStatus.OK);
+		StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), 
+							"Usuario promocionado a ADMIN correctamente", null, HttpStatus.OK);
 		return ResponseEntity.status(HttpStatus.OK).body(respuesta);
 	}
 
@@ -90,8 +90,9 @@ public class UsuariosController {
 	@PostMapping(value="/desbloquearCuenta")
 	public ResponseEntity<StandardResponse> desbloquearCuenta(@RequestParam String username){
 		blockAccountService.desbloquearCuenta(username);
-		StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), "La cuenta del usuario " + username +
-				"se ha sido desbloqueada correctamente", null, HttpStatus.OK);
+		StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), 
+					"La cuenta del usuario " + username + " ha sido desbloqueada correctamente", 
+					null, HttpStatus.OK);
 		return ResponseEntity.status(HttpStatus.OK).body(respuesta);
 	}
 
@@ -104,7 +105,8 @@ public class UsuariosController {
 		} else {
 			mensaje = "El usuario " + username + " no es administrador.";
 		}
-		StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), mensaje, null, HttpStatus.OK);
+		StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), mensaje, null, 
+																					HttpStatus.OK);
 		return ResponseEntity.status(HttpStatus.OK).body(respuesta);
 	}
 }

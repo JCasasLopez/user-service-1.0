@@ -27,14 +27,25 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 			AuthenticationException authException) throws IOException, ServletException {
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
-		int intentosRestantes = (Integer) request.getAttribute("intentosRestantes");
+		Object intentosRestantes = request.getAttribute("intentosRestantes");
+		int intentos = 0;
+		//En caso de que el problema no tenga nada que ver con un fallo de autenticación, 
+		//el valor de la variable intentosRestantes va a ser null, lo que provocará una 
+		//NullPointerException
+		if(intentosRestantes == null) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().write("{\"error\": \"Ocurrió un error desconocido.\"}");
+			return;
+		} else {
+			intentos = (Integer) intentosRestantes;
+		}
 
 		if (authException instanceof LockedException) {
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 			response.getWriter().write("{\"error\": \"La cuenta está bloqueada. Contacte con soporte.\"}");
 
 		} else if (authException instanceof BadCredentialsException) {
-			if(intentosRestantes >= 1) {
+			if(intentos >= 1) {
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 				response.getWriter().write("{\"error\": \"Credenciales incorrectas. Le quedan " 
 						+ intentosRestantes + " intentos\"}");
