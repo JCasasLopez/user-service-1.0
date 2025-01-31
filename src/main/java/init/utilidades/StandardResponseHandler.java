@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -12,6 +13,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import init.entities.StandardResponse;
 import jakarta.servlet.http.HttpServletResponse;
 
+@Component
 public class StandardResponseHandler {
 	
 	ObjectMapper objectMapper;
@@ -29,7 +31,6 @@ public class StandardResponseHandler {
     	response.setStatus(status);
     	StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), message, details, 
     																HttpStatus.resolve(status));
-    	response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     	String jsonResponse = objectMapper.writeValueAsString(respuesta);
         response.getWriter().write(jsonResponse);
         return response;
