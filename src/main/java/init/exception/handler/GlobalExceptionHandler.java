@@ -18,6 +18,7 @@ import init.exception.UserAlreadyAdminException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.MalformedJwtException;
+import jakarta.validation.ConstraintViolationException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -116,6 +117,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<StandardResponse> handleNoSuchUserException (NoSuchUserException  ex) {
     	StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), ex.getMessage(), null,
 				HttpStatus.BAD_REQUEST);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(respuesta);
+    }
+    
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<StandardResponse> handleConstraintViolationException (ConstraintViolationException  ex) {
+    	StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), 
+    			"Falta algún campo o formato incorrecto", null, HttpStatus.BAD_REQUEST);
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(respuesta);
     }
 }

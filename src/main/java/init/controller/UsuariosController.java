@@ -48,10 +48,15 @@ public class UsuariosController {
 	@PostMapping(value="/altaUsuario", consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<StandardResponse> altaUsuario(@Valid @RequestBody UsuarioDto usuario){
 		customUserDetailsManager.passwordIsValid(usuario.getPassword());
+		if(usuario.getRoles() == null) {
+			//Como es una razón muy específica que nos interesa manejar de forma individual,
+			//lanzamos la excepción aquí en vez de delegarla al GlobalExceptionManager
+			throw new IllegalArgumentException("Falta la lista vacía de roles en el JSON: 'roles': []");
+		}
 		UsuarioSecurity usuarioSecurity = new UsuarioSecurity(mapeador.usuarioDtoToUsuario(usuario));
 		customUserDetailsManager.createUser(usuarioSecurity);
 		StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), "Usuario creado correctamente", null,
-																				HttpStatus.OK);
+				HttpStatus.OK);
 		return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
 	}
 

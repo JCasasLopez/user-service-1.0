@@ -13,6 +13,7 @@ import init.dao.UsuariosDao;
 import init.entities.Usuario;
 import init.service.JwtService;
 import init.utilidades.Mapeador;
+import init.utilidades.StandardResponseHandler;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,11 +25,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	JwtService jwtService;
 	UsuariosDao usuariosDao;
 	Mapeador mapeador;
+	StandardResponseHandler standardResponseHandler;
 	
-	public JwtAuthenticationFilter(JwtService jwtService, UsuariosDao usuariosDao, Mapeador mapeador) {
+	public JwtAuthenticationFilter(JwtService jwtService, UsuariosDao usuariosDao, Mapeador mapeador,
+			StandardResponseHandler standardResponseHandler) {
 		this.jwtService = jwtService;
 		this.usuariosDao = usuariosDao;
 		this.mapeador = mapeador;
+		this.standardResponseHandler = standardResponseHandler;
 	}
 
 	@Override
@@ -41,10 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			//Si se llama a "/logout", logUserOut() se encarga de realizar el logout
 			if ("POST".equalsIgnoreCase(request.getMethod()) && request.getServletPath().equals("/logout")) {
 				String mensaje = jwtService.logUserOut(token);
-				response.setStatus(HttpServletResponse.SC_OK);
-		        response.setContentType("application/json");
-		        response.setCharacterEncoding("UTF-8");
-		        response.getWriter().write("{\"mensaje\": \"" + mensaje + "\"}");
+				standardResponseHandler.handleResponse(response, 200, mensaje, null);
 				return; 
 			}
 
