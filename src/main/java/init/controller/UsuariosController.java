@@ -6,9 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -61,7 +61,8 @@ public class UsuariosController {
 	}
 
 	@DeleteMapping(value="/borrarUsuario", produces=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<StandardResponse> borrarUsuario(@Valid @RequestParam String username){
+	public ResponseEntity<StandardResponse> borrarUsuario(){
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		customUserDetailsManager.deleteUser(username);
 		StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), 
 										"Usuario borrado correctamente", null, HttpStatus.OK);
@@ -101,11 +102,11 @@ public class UsuariosController {
 		return ResponseEntity.status(HttpStatus.OK).body(respuesta);
 	}
 
-	@GetMapping(value="/usuarioEsAdmin")
+	/*@GetMapping(value="/usuarioEsAdmin")
 	public ResponseEntity<StandardResponse> usuarioEsAdmin(@RequestParam String username){
 		boolean usuarioEsAdmin = customUserDetailsManager.isUserAdmin(username);
 		StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), 
 												String.valueOf(usuarioEsAdmin), null, HttpStatus.OK);
 		return ResponseEntity.status(HttpStatus.OK).body(respuesta);
-	}
+	}*/
 }

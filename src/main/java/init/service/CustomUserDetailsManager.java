@@ -130,14 +130,14 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 		usuariosDao.save(addRole(usuario, 2));
 	}
 	
-	public boolean isUserAdmin(String username) {
+	/*public boolean isUserAdmin(String username) {
 		//Al usuario se le asigna por defecto el role de usuario (ROLE_USER), por tanto, cuando
 		//la colección de roles tiene más de un rol, significa que el usuario es también ADMIN.
 		if(findUser(username).getRoles().size() > 1) {
 			return true;
 		}
 		return false;
-	}
+	}*/
 	
 	public boolean passwordIsValid(String password) {
 		boolean result = pattern.matcher(password).matches();
