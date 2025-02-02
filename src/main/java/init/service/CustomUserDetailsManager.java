@@ -80,7 +80,6 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 	@Transactional
 	@PreAuthorize("#username == authentication.principal.username")
 	public void deleteUser(String username) {
-		//Accesible solo al usuario mismo una vez esté autenticado
 		findUser(username);
 		usuariosDao.deleteByUsername(username);
 	}
@@ -107,33 +106,23 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 
 	@Override
 	public boolean userExists(String username) {
-		//Accesible a cualquiera
 		return usuariosDao.existsByUsername(username);
 	}
 	
 	public Usuario findUser(String username) {
 		//Todas las llamadas solicitando el objeto Usuario a partir del username, se centralizan 
 		//en este método
-			return usuariosDao.findByUsername(username);
+		return usuariosDao.findByUsername(username);
 	}
 	
 	@PreAuthorize("hasRole('ROLE_SUPERADMIN')")
 	public void upgradeUser(Usuario usuario) {
-		//Este método, solo accesible al "SUPER ADMIN", convierte usuarios normales en "admins"
+		//Este método, solo es accesible al "SUPER ADMIN", convierte usuarios normales en "admins"
 		if(usuario.getRoles().size() > 1) {
 			throw new UserAlreadyAdminException("El usuario ya tiene el rol ADMIN");
 		}
 		usuariosDao.save(addRole(usuario, 2));
 	}
-	
-	/*public boolean isUserAdmin(String username) {
-		//Al usuario se le asigna por defecto el role de usuario (ROLE_USER), por tanto, cuando
-		//la colección de roles tiene más de un rol, significa que el usuario es también ADMIN.
-		if(findUser(username).getRoles().size() > 1) {
-			return true;
-		}
-		return false;
-	}*/
 	
 	public boolean passwordIsValid(String password) {
 		boolean result = pattern.matcher(password).matches();

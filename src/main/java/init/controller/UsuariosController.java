@@ -76,12 +76,6 @@ public class UsuariosController {
 									"Contraseña cambiada correctamente", null, HttpStatus.OK);
 		return ResponseEntity.status(HttpStatus.OK).body(respuesta);
 	}
-
-	/*@GetMapping(value="/usuarioExiste", produces=MediaType.TEXT_PLAIN_VALUE)
-	public ResponseEntity<String> usuarioExiste(@Valid @RequestParam  String username){
-		boolean response = customUserDetailsManager.userExists(username);
-		return ResponseEntity.status(HttpStatus.OK).body(String.valueOf(response));
-	}*/
 	
 	@PostMapping(value="/crearAdmin")
 	public ResponseEntity<StandardResponse> crearAdmin(@RequestParam String username){
@@ -100,11 +94,4 @@ public class UsuariosController {
 		return ResponseEntity.status(HttpStatus.OK).body(respuesta);
 	}
 
-	/*@GetMapping(value="/usuarioEsAdmin")
-	public ResponseEntity<StandardResponse> usuarioEsAdmin(@RequestParam String username){
-		boolean usuarioEsAdmin = customUserDetailsManager.isUserAdmin(username);
-		StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), 
-												String.valueOf(usuarioEsAdmin), null, HttpStatus.OK);
-		return ResponseEntity.status(HttpStatus.OK).body(respuesta);
-	}*/
 }
