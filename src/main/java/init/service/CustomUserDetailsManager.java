@@ -4,7 +4,6 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -99,7 +98,7 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 	    
 	    //Comprobamos que la contraseña pasada como parámetro sea la misma que figura en la base de datos
 	    if(!passwordEncoder.matches(oldPassword, findUser(username).getPassword())) {
-	        throw new BadCredentialsException("La contraseña actual no coincide con la que figura en la base de datos");
+	        throw new InvalidPasswordException("La contraseña actual no coincide con la que figura en la base de datos");
 	    }
 	    
 	    //Guardamos la nueva contraseña en la base de datos, asegurándonos de que esté codificada
@@ -115,10 +114,7 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 	public Usuario findUser(String username) {
 		//Todas las llamadas solicitando el objeto Usuario a partir del username, se centralizan 
 		//en este método
-		if(usuariosDao.findByUsername(username)!=null) {
 			return usuariosDao.findByUsername(username);
-		}
-		throw new UsernameNotFoundException(("El usuario " + username + " no existe en la base de datos"));
 	}
 	
 	@PreAuthorize("hasRole('ROLE_SUPERADMIN')")
