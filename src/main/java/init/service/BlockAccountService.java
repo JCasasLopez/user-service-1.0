@@ -1,5 +1,6 @@
 package init.service;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import init.dao.UsuariosDao;
@@ -35,6 +36,7 @@ public class BlockAccountService {
 		usuariosDao.save(usuario);
 	}
 	
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
 	public void desbloquearCuenta(String username) {
 		Usuario usuario = usuariosDao.findByUsername(username);
 		if(usuario == null) {

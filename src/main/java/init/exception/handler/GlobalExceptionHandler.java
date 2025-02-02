@@ -36,13 +36,6 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(respuesta);
 	}
 	
-	/*@ExceptionHandler(AccessDeniedException.class)
-	public ResponseEntity<StandardResponse> handleAccessDeniedException(AccessDeniedException ex){
-		StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), ex.getMessage(), null,
-				HttpStatus.FORBIDDEN);
-		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(respuesta);
-	}*/
-	
 	@ExceptionHandler(BadCredentialsException.class)
 	public ResponseEntity<StandardResponse> handleBadCredentialsException(BadCredentialsException ex){
 		StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), ex.getMessage(), null,

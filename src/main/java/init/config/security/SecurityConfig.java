@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -30,18 +31,21 @@ public class SecurityConfig {
 	AuthenticationFailureHandler authenticationFailureHandler;
 	AuthenticationSuccessHandler authenticationSuccessHandler;
 	AuthenticationEntryPoint authenticationEntryPoint;
+	AccessDeniedHandler accessDeniedHandler;
 	
     public SecurityConfig(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder,
 			JwtAuthenticationFilter jwtAuthenticationFilter,
 			CustomAuthenticationFailureHandler customAuthenticationFailureHandler,
 			CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler,
-			CustomAuthenticationEntryPoint customAuthenticationEntryPoint) {
+			CustomAuthenticationEntryPoint customAuthenticationEntryPoint,
+			AccessDeniedHandler accessDeniedHandler) {
 		this.userDetailsService = userDetailsService;
 		this.passwordEncoder = passwordEncoder;
 		this.jwtAuthenticationFilter = jwtAuthenticationFilter;
 		this.authenticationFailureHandler = customAuthenticationFailureHandler;
 		this.authenticationSuccessHandler = customAuthenticationSuccessHandler;
 		this.authenticationEntryPoint = customAuthenticationEntryPoint;
+		this.accessDeniedHandler = accessDeniedHandler;
 	}
     
 	@Bean
@@ -69,7 +73,8 @@ public class SecurityConfig {
         
         http
         	.exceptionHandling(exceptions -> exceptions
-                .authenticationEntryPoint(authenticationEntryPoint))
+                .authenticationEntryPoint(authenticationEntryPoint)
+                .accessDeniedHandler(accessDeniedHandler))
             .csrf(csrf -> csrf.disable())
             .sessionManagement(sessMang -> sessMang.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

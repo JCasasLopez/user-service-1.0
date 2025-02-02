@@ -24,7 +24,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 	public void handle(HttpServletRequest request, HttpServletResponse response,
 			AccessDeniedException accessDeniedException) throws IOException, ServletException {
 		 standardResponseHandler.handleResponse(response, 403, 
-	        		"Acceso denegado. El usuario no tiene los privilegios para acceder a este recurso"
+	        		"Acceso denegado. El usuario no tiene permiso para acceder a este recurso"
 				 	, null);
 	}
 

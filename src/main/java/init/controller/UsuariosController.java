@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -60,7 +59,6 @@ public class UsuariosController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
 	}
 	
-	@PreAuthorize("#username == authentication.principal.username")
 	@DeleteMapping(value="/borrarUsuario", produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<StandardResponse> borrarUsuario(){
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -85,7 +83,6 @@ public class UsuariosController {
 		return ResponseEntity.status(HttpStatus.OK).body(String.valueOf(response));
 	}*/
 	
-	@PreAuthorize("hasRole('ROLE_SUPERADMIN')")
 	@PostMapping(value="/crearAdmin")
 	public ResponseEntity<StandardResponse> crearAdmin(@RequestParam String username){
 		customUserDetailsManager.upgradeUser(customUserDetailsManager.findUser(username));
@@ -94,7 +91,6 @@ public class UsuariosController {
 		return ResponseEntity.status(HttpStatus.OK).body(respuesta);
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
 	@PostMapping(value="/desbloquearCuenta")
 	public ResponseEntity<StandardResponse> desbloquearCuenta(@RequestParam String username){
 		blockAccountService.desbloquearCuenta(username);
