@@ -37,7 +37,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 		String username = authentication.getName(); 
         String token = jwtService.createToken(); 
         standardResponseHandler.handleResponse(response, 200, "Autenticación llevada a cabo con éxito"
-        																	, "Token: " + token);
+        																	, token);
         Usuario usuario = usuariosDao.findByUsername(username);
 		blockAccountService.resetearIntentosFallidos(usuario);
 	}
