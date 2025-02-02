@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -37,12 +36,12 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(respuesta);
 	}
 	
-	@ExceptionHandler(AccessDeniedException.class)
+	/*@ExceptionHandler(AccessDeniedException.class)
 	public ResponseEntity<StandardResponse> handleAccessDeniedException(AccessDeniedException ex){
 		StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), ex.getMessage(), null,
 				HttpStatus.FORBIDDEN);
 		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(respuesta);
-	}
+	}*/
 	
 	@ExceptionHandler(BadCredentialsException.class)
 	public ResponseEntity<StandardResponse> handleBadCredentialsException(BadCredentialsException ex){

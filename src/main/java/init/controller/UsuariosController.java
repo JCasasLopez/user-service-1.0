@@ -59,7 +59,8 @@ public class UsuariosController {
 				HttpStatus.OK);
 		return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
 	}
-
+	
+	@PreAuthorize("#username == authentication.principal.username")
 	@DeleteMapping(value="/borrarUsuario", produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<StandardResponse> borrarUsuario(){
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -83,7 +84,8 @@ public class UsuariosController {
 		boolean response = customUserDetailsManager.userExists(username);
 		return ResponseEntity.status(HttpStatus.OK).body(String.valueOf(response));
 	}*/
-
+	
+	@PreAuthorize("hasRole('ROLE_SUPERADMIN')")
 	@PostMapping(value="/crearAdmin")
 	public ResponseEntity<StandardResponse> crearAdmin(@RequestParam String username){
 		customUserDetailsManager.upgradeUser(customUserDetailsManager.findUser(username));

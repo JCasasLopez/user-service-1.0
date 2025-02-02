@@ -13,7 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-    private final StandardResponseHandler standardResponseHandler;
+    StandardResponseHandler standardResponseHandler;
 
     public CustomAuthenticationEntryPoint(StandardResponseHandler standardResponseHandler) {
         this.standardResponseHandler = standardResponseHandler;

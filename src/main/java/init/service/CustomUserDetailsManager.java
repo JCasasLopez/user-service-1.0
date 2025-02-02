@@ -3,7 +3,6 @@ package init.service;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -79,7 +78,6 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 
 	@Override
 	@Transactional
-	@PreAuthorize("#username == authentication.principal.username")
 	public void deleteUser(String username) {
 		//Accesible solo al usuario mismo una vez esté autenticado
 		findUser(username);
@@ -121,7 +119,6 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 		throw new UsernameNotFoundException(("El usuario " + username + " no existe en la base de datos"));
 	}
 	
-	@PreAuthorize("hasRole('ROLE_SUPERADMIN')")
 	public void upgradeUser(Usuario usuario) {
 		//Este método, solo accesible al "SUPER ADMIN", convierte usuarios normales en "admins"
 		if(usuario.getRoles().size() > 1) {
