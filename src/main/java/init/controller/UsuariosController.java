@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -102,4 +103,14 @@ public class UsuariosController {
 					null, HttpStatus.OK);
 		return ResponseEntity.status(HttpStatus.OK).body(respuesta);
 	}
+	
+	@GetMapping(value="/olvidePassword")
+	public ResponseEntity<StandardResponse> olvidePassword(@RequestParam String email){
+		customUserDetailsManager.forgotPassword(email);
+		StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), 
+				"Se ha enviado un email con el enlace para resetear la contraseña", 
+				null, HttpStatus.OK);
+		return ResponseEntity.status(HttpStatus.OK).body(respuesta);
+	}
+
 }
