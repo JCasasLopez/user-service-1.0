@@ -2,6 +2,7 @@ package init.controller;
 
 import java.time.LocalDateTime;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import init.config.security.UsuarioSecurity;
 import init.entities.StandardResponse;
+import init.events.UsuarioCreadoEvent;
 import init.model.UsuarioDto;
 import init.service.BlockAccountService;
 import init.service.CustomUserDetailsManager;
@@ -31,13 +33,16 @@ public class UsuariosController {
 	Mapeador mapeador;
 	JwtService jwtService;
 	BlockAccountService blockAccountService;
+	 private final ApplicationEventPublisher eventPublisher;
 
 	public UsuariosController(CustomUserDetailsManager customUserDetailsManager, Mapeador mapeador,
-			JwtService jwtService, BlockAccountService blockAccountService) {
+			JwtService jwtService, BlockAccountService blockAccountService,
+			ApplicationEventPublisher eventPublisher) {
 		this.customUserDetailsManager = customUserDetailsManager;
 		this.mapeador = mapeador;
 		this.jwtService = jwtService;
 		this.blockAccountService = blockAccountService;
+		this.eventPublisher = eventPublisher;
 	}
 
 	//loadUserByUsername() es un método interno usado por Spring Security durante
@@ -54,6 +59,10 @@ public class UsuariosController {
 		}
 		UsuarioSecurity usuarioSecurity = new UsuarioSecurity(mapeador.usuarioDtoToUsuario(usuario));
 		customUserDetailsManager.createUser(usuarioSecurity);
+		
+		//Publicamos el evento
+		eventPublisher.publishEvent(new UsuarioCreadoEvent(usuario.getUsername(), usuario.getEmail()));
+		
 		StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), "Usuario creado correctamente", null,
 				HttpStatus.OK);
 		return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
