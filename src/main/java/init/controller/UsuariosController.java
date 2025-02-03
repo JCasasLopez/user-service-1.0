@@ -102,5 +102,4 @@ public class UsuariosController {
 					null, HttpStatus.OK);
 		return ResponseEntity.status(HttpStatus.OK).body(respuesta);
 	}
-
 }
