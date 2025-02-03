@@ -85,8 +85,7 @@ public class SecurityConfig {
             //en la base de datos.
             .logout(logout -> logout.disable()) 
             .authorizeHttpRequests(authorize -> authorize
-            							.requestMatchers("/altaUsuario", "/usuarioExiste",
-            									"/usuarioEsAdmin").permitAll() 
+            							.requestMatchers("/altaUsuario").permitAll() 
             							.requestMatchers("/borrarUsuario", "/cambiarPassword", 
             									"/crearAdmin", "/desbloquearCuenta").authenticated()
             							.anyRequest().authenticated()
