@@ -17,6 +17,7 @@ public class EmailService {
     }
 
     public void enviarCorreo(String destinatario, String asunto, String mensaje) {
+    	
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
@@ -27,6 +28,7 @@ public class EmailService {
 
             mailSender.send(mimeMessage);
             System.out.println("Correo enviado a: " + destinatario);
+            
         } catch (MessagingException e) {
             System.err.println("Error al enviar correo: " + e.getMessage());
         }

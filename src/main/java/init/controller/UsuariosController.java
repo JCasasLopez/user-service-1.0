@@ -33,7 +33,7 @@ public class UsuariosController {
 	Mapeador mapeador;
 	JwtService jwtService;
 	BlockAccountService blockAccountService;
-	 private final ApplicationEventPublisher eventPublisher;
+	ApplicationEventPublisher eventPublisher;
 
 	public UsuariosController(CustomUserDetailsManager customUserDetailsManager, Mapeador mapeador,
 			JwtService jwtService, BlockAccountService blockAccountService,

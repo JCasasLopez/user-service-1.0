@@ -1,6 +1,7 @@
 package init.events;
 
 public class UsuarioCreadoEvent {
+	
 	private final String username;
 	private final String email;
 
@@ -10,6 +11,7 @@ public class UsuarioCreadoEvent {
 	}
 
 	public String getUsername() { return username; }
+	
 	public String getEmail() { return email; }
 }
 

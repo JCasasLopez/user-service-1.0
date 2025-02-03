@@ -1,10 +1,12 @@
 package init.service;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import init.dao.UsuariosDao;
 import init.entities.Usuario;
+import init.events.UsuarioBloqueadoEvent;
 import init.utilidades.Constants;
 
 @Service
@@ -12,10 +14,13 @@ public class BlockAccountService {
 		
 	UsuariosDao usuariosDao;
 	CustomUserDetailsManager customUserDetailsManager;
+	ApplicationEventPublisher eventPublisher;
 	
-	public BlockAccountService(UsuariosDao usuariosDao, CustomUserDetailsManager customUserDetailsManager) {
+	public BlockAccountService(UsuariosDao usuariosDao, CustomUserDetailsManager customUserDetailsManager,
+			ApplicationEventPublisher eventPublisher) {
 		this.usuariosDao = usuariosDao;
 		this.customUserDetailsManager = customUserDetailsManager;
+		this.eventPublisher = eventPublisher;
 	}
 
 	public void incrementarIntentosFallidos(Usuario usuario) {
@@ -34,6 +39,7 @@ public class BlockAccountService {
 	
 	public void bloquearCuenta(Usuario usuario) {
 		usuario.setCuentaBloqueada(true);
+		eventPublisher.publishEvent(new UsuarioBloqueadoEvent(usuario.getUsername(), usuario.getEmail()));
 		usuariosDao.save(usuario);
 	}
 	
