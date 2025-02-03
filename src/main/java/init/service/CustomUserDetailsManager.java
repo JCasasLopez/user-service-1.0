@@ -36,13 +36,18 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 	RolesDao rolesDao;
 	Mapeador mapeador;
 	PasswordEncoder passwordEncoder;
+	JwtService jwtService;
+	EmailService emailService;
 	
 	public CustomUserDetailsManager(UsuariosDao usuariosDao, Mapeador mapeador, 
-													PasswordEncoder passwordEncoder, RolesDao rolesDao) {
+													PasswordEncoder passwordEncoder, RolesDao rolesDao,
+													JwtService jwtService, EmailService emailService) {
 		this.usuariosDao = usuariosDao;
 		this.mapeador = mapeador;
 		this.passwordEncoder = passwordEncoder;
 		this.rolesDao = rolesDao;
+		this.jwtService = jwtService;
+		this.emailService = emailService;
 	}
 	
 	private Usuario addRole(Usuario usuario, int idRol) {
@@ -132,5 +137,16 @@ public class CustomUserDetailsManager implements UserDetailsManager {
         	throw new InvalidPasswordException("La contraseña no cumple con los requisitos");
         }
         return result;
+	}
+	
+	public void forgotPassword(String email) {
+		//Manda un email con la dirección del endpoint para resetear la contraseña, junto con el 
+		//token JWT que usamos como autenticación
+		Usuario usuario = usuariosDao.findByEmail(email)
+						.orElseThrow(() -> new NoSuchUserException("No existe ningún usuario con ese username"));
+		String token = jwtService.createTokenResetPassword(usuario);
+		String mensaje = "Aquí tiene el enlace para la recuparación de su contraseña: " +
+				"http://localhost:8000/usuarios/resetearPassword?newPassword=" + token;
+		emailService.enviarCorreo(email, "Recuperación de contraseña", mensaje);
 	}
 }
