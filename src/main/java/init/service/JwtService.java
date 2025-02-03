@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import init.dao.TokensDao;
+import init.entities.Rol;
 import init.entities.TokenJwt;
+import init.entities.Usuario;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
@@ -58,6 +60,28 @@ public class JwtService {
 		tokensDao.save(new TokenJwt(token));	
 		return token;
 		}
+    
+    @Transactional
+    public String createTokenResetPassword(Usuario usuario) {
+    //La lógica de este método es ligeramente diferente a la de createToken(), ya que aquí no hay 
+    //ningún usuario autenticado, así que el nombre y las credenciales hay que sacarlas del usuario 
+    //que se pasa como parámetro, y además no hace falta persistir el token.
+    	
+    	String token =  Jwts
+    			.builder()
+    			.header() 
+    			.type("JWT")
+    			.and()
+    			.subject(usuario.getUsername()) 
+    			.claim("roles", usuario.getRoles().stream()
+    					.map(Rol::getNombreRol).collect(Collectors.toList()))
+    			.issuedAt(new Date(System.currentTimeMillis()))
+    			.expiration(new Date(System.currentTimeMillis() + expiration))
+    			.signWith(clave, Jwts.SIG.HS256)
+    			.compact();
+
+    	return token;
+    }
     
 	public Claims extractPayload(String token) {
 		try {
