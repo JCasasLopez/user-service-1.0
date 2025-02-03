@@ -11,9 +11,11 @@ import init.utilidades.Constants;
 public class BlockAccountService {
 		
 	UsuariosDao usuariosDao;
+	CustomUserDetailsManager customUserDetailsManager;
 	
-	public BlockAccountService(UsuariosDao usuariosDao) {
+	public BlockAccountService(UsuariosDao usuariosDao, CustomUserDetailsManager customUserDetailsManager) {
 		this.usuariosDao = usuariosDao;
+		this.customUserDetailsManager = customUserDetailsManager;
 	}
 
 	public void incrementarIntentosFallidos(Usuario usuario) {
@@ -37,9 +39,9 @@ public class BlockAccountService {
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
 	public void desbloquearCuenta(String username) {
-		Usuario usuario = usuariosDao.findByUsername(username);
-		usuario.setIntentosFallidos(0);
-		usuario.setCuentaBloqueada(false);
-		usuariosDao.save(usuario);
+		Usuario usuario = customUserDetailsManager.findUser(username);
+	    usuario.setIntentosFallidos(0);
+	    usuario.setCuentaBloqueada(false);
+	    usuariosDao.save(usuario);
 	}
 }

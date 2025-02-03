@@ -1,6 +1,7 @@
 package init.config.security;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,7 +38,16 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException exception) throws IOException, ServletException {
 		String username = (String) request.getParameter("username");
-		Usuario usuario = usuariosDao.findByUsername(username);
+		Optional<Usuario> optionalUsuario = usuariosDao.findByUsername(username);
+		Usuario usuario = new Usuario();
+		if (optionalUsuario.isPresent()) {
+		    usuario = optionalUsuario.get(); 
+		} else {
+		    standardResponseHandler.handleResponse(response, 404, "No existe ningún usuario con ese username"
+		    		, null);
+		    return;
+		}
+
 		if(usuario.isCuentaBloqueada()) {
 			standardResponseHandler.handleResponse(response, 401, 
 					"La cuenta está bloqueada. Contacte con soporte", null);

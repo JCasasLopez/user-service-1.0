@@ -52,7 +52,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			//Si esta línea no lanza una excepción, significa que el token es válido
 			//por lo tanto, podemos establecer el objeto authentication en el SecurityContextHolder
 			String username = jwtService.extractPayload(token).getSubject();
-			Usuario usuario = usuariosDao.findByUsername(username);
+			//Sabemos seguro que va el Optional no va a estar vacío
+			Usuario usuario = usuariosDao.findByUsername(username).get();
 			
 			//Spring Security espera un objeto UserDetails (UsuarioSecurity) como principal para que ciertas 
 			//expresiones de seguridad funcionen correctamente
@@ -63,5 +64,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		}
 		filterChain.doFilter(request, response);
 	}
-
 }

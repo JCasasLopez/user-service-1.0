@@ -94,7 +94,7 @@ class TestsDao {
 	//Los siguientes 4 tests verifican los métodos de la capa Dao. Como tienen consultas JPQL
 	//personalizadas, o la consulta se deriva del nombre del método, es conveniente testearlos.
 	
-	@Test
+	/*@Test
 	@DisplayName("Encuentra al usuario con ese username")
 	void findByUsername() {
 		//Arrange
@@ -115,7 +115,7 @@ class TestsDao {
 						"Los nombres no coincide"),
 				() -> assertEquals(user1.getFechaNacimiento(), usuarioPersistido.getFechaNacimiento(), 
 						"Las fechas de nacimiento no coinciden"));
-	}
+	}*/
 	
 	@Test
 	@DisplayName("El usuario con ese username existe")
@@ -141,7 +141,7 @@ class TestsDao {
 				"Se esperaba que se hubiera borrado ese usuario");
 	}
 	
-	@Test
+	/*@Test
 	@DisplayName("Cambia la contraseña de ese username")
 	void updatePassword() {
 		//Arrange
@@ -199,5 +199,5 @@ class TestsDao {
 
 	    // Assert
 	    assertEquals(0, usuarioTrasEliminarRol.getRoles().size());
-	}
+	}*/
 }

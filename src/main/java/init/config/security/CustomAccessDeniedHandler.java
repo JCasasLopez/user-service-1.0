@@ -19,13 +19,13 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 	public CustomAccessDeniedHandler(StandardResponseHandler standardResponseHandler) {
 		this.standardResponseHandler = standardResponseHandler;
 	}
-	
+
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response,
 			AccessDeniedException accessDeniedException) throws IOException, ServletException {
-		 standardResponseHandler.handleResponse(response, 403, 
-	        		"Acceso denegado. El usuario no tiene permiso para acceder a este recurso"
-				 	, null);
+		standardResponseHandler.handleResponse(response, 403, 
+				"Acceso denegado. El usuario no tiene permiso para acceder a este recurso"
+				, null);
 	}
 
 }

@@ -19,6 +19,7 @@ import init.dao.UsuariosDao;
 import init.entities.Rol;
 import init.entities.Usuario;
 import init.exception.InvalidPasswordException;
+import init.exception.NoSuchUserException;
 import init.exception.RolNotFoundException;
 import init.exception.UserAlreadyAdminException;
 import init.utilidades.Mapeador;
@@ -112,7 +113,8 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 	public Usuario findUser(String username) {
 		//Todas las llamadas solicitando el objeto Usuario a partir del username, se centralizan 
 		//en este método
-		return usuariosDao.findByUsername(username);
+		return usuariosDao.findByUsername(username)
+	            .orElseThrow(() -> new NoSuchUserException("No existe ningún usuario con ese username"));
 	}
 	
 	@PreAuthorize("hasRole('ROLE_SUPERADMIN')")

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import init.entities.StandardResponse;
 import init.exception.InvalidPasswordException;
+import init.exception.NoSuchUserException;
 import init.exception.UserAlreadyAdminException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -18,6 +19,13 @@ import jakarta.validation.ConstraintViolationException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+	
+	@ExceptionHandler(NoSuchUserException.class)
+	public ResponseEntity<StandardResponse> handleNoSuchUserException(NoSuchUserException ex){
+		StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), 
+				ex.getMessage() , null, HttpStatus.NOT_FOUND);
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
+	}
 	
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ResponseEntity<StandardResponse> handleIllegalArgumentException(IllegalArgumentException ex){
