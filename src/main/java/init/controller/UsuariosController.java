@@ -117,7 +117,7 @@ public class UsuariosController {
 			@RequestParam String newPassword){
 		customUserDetailsManager.resetPassword(token, newPassword);		
 		StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), 
-				"Se ha enviado un email con el enlace para resetear la contraseña", 
+				"Su contraseña se ha reseteado correctamente", 
 				null, HttpStatus.OK);
 		return ResponseEntity.status(HttpStatus.OK).body(respuesta);
 	}
