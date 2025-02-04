@@ -151,4 +151,5 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 				+ urlAngular + "?token=" + token;
 		emailService.enviarCorreo(email, "Recuperación de contraseña", mensaje);
 	}
+	
 }

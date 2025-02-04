@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import init.config.security.UsuarioSecurity;
 import init.entities.StandardResponse;
+import init.entities.Usuario;
 import init.events.UsuarioCreadoEvent;
 import init.model.UsuarioDto;
 import init.service.BlockAccountService;
@@ -112,4 +113,13 @@ public class UsuariosController {
 		return ResponseEntity.status(HttpStatus.OK).body(respuesta);
 	}
 	
+	@PostMapping(value="/resetPassword")
+	public ResponseEntity<StandardResponse> resetPassword(@RequestParam String token, 
+			@RequestParam String newPassword){
+		customUserDetailsManager.resetPassword(token, newPassword);		
+		StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), 
+				"Se ha enviado un email con el enlace para resetear la contraseña", 
+				null, HttpStatus.OK);
+		return ResponseEntity.status(HttpStatus.OK).body(respuesta);
+	}
 }
