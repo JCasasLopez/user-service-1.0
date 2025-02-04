@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import init.dao.TokensDao;
 import init.entities.Rol;
 import init.entities.TokenJwt;
+import init.entities.TokenStatus;
 import init.entities.Usuario;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -110,13 +111,13 @@ public class JwtService {
 		//En los comentarios de más abajo, la palabra "sesión" está entre comillas porque con los 
 		//tokens JWT no hay sesiones como tal, son stateless
 		TokenJwt tokenJwt = tokensDao.findByToken(token);
-		if(tokenJwt.isLoggedOut()) {
+		if(!(tokenJwt.getValidez() == TokenStatus.ACTIVO)) {
 			//La "sesión" ya estaba inactiva
 			return "La sesión ya estaba inactiva";
 		} else {
 			//La "sesión" aún estaba activa. Se cambia su campo "isLoggedOut" a true, se graba 
 			//y se vacía el SecurityContext -> no hay usuario autenticado
-			tokenJwt.setLoggedOut(true);
+			tokenJwt.setValidez(TokenStatus.LOGGED_OUT);
 			tokensDao.save(tokenJwt);
 			SecurityContextHolder.getContext().setAuthentication(null);
 			return "El usuario ha abandonado la sesión";
