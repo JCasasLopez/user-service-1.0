@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import init.config.security.UsuarioSecurity;
 import init.entities.StandardResponse;
-import init.entities.Usuario;
 import init.events.UsuarioCreadoEvent;
 import init.model.UsuarioDto;
 import init.service.BlockAccountService;
