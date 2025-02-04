@@ -32,8 +32,12 @@ public class JwtService {
 		this.tokensDao = tokensDao;
 	}
 	
-	//El token expira a los 30 minutos (30*60*1000 milisegundos)
+	//El token normal expira a los 30 minutos (30*60*1000 milisegundos)
 	private final long expiration = 30 * 60 * 1000;
+	
+	//El token para el reseteo de contraseña expira a los 30 minutos (5*60*1000 milisegundos)
+	private final long expirationReset = 5 * 60 * 1000;
+
 	
 	//@Value("{jwt.secret.key}")
 	private String secretKey = "RXN0YWVzbWljbGF2ZXNlY3JldGFwZXJmZWN0YWNvbnVubW9udG9uZGVieXRlc1ZpbmRlbDM5ISE=";
@@ -64,9 +68,9 @@ public class JwtService {
     
     @Transactional
     public String createTokenResetPassword(Usuario usuario) {
-    //La lógica de este método es ligeramente diferente a la de createToken(), ya que aquí no hay 
-    //ningún usuario autenticado, así que el nombre y las credenciales hay que sacarlas del usuario 
-    //que se pasa como parámetro, y además no hace falta persistir el token.
+    //La lógica de este método es ligeramente diferente a la de createToken(), ya que aquí 
+    //1) no hay ningún usuario autenticado, así que el nombre y las credenciales hay que sacarlas del 
+    //usuario, y que se pasa como parámetro y, 2) expira a los 5' (30' para el token "normal")
     	
     	String token =  Jwts
     			.builder()
@@ -77,10 +81,11 @@ public class JwtService {
     			.claim("roles", usuario.getRoles().stream()
     					.map(Rol::getNombreRol).collect(Collectors.toList()))
     			.issuedAt(new Date(System.currentTimeMillis()))
-    			.expiration(new Date(System.currentTimeMillis() + expiration))
+    			.expiration(new Date(System.currentTimeMillis() + expirationReset))
     			.signWith(clave, Jwts.SIG.HS256)
     			.compact();
-
+    	
+    	tokensDao.save(new TokenJwt(token));	
     	return token;
     }
     
