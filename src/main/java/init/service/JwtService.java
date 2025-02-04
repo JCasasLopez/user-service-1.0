@@ -35,10 +35,9 @@ public class JwtService {
 	//El token normal expira a los 30 minutos (30*60*1000 milisegundos)
 	private final long expiration = 30 * 60 * 1000;
 	
-	//El token para el reseteo de contraseña expira a los 30 minutos (5*60*1000 milisegundos)
+	//El token para el reseteo de contraseña expira a los 5 minutos (5*60*1000 milisegundos)
 	private final long expirationReset = 5 * 60 * 1000;
 
-	
 	//@Value("{jwt.secret.key}")
 	private String secretKey = "RXN0YWVzbWljbGF2ZXNlY3JldGFwZXJmZWN0YWNvbnVubW9udG9uZGVieXRlc1ZpbmRlbDM5ISE=";
 	byte[] keyBytes = Base64.getDecoder().decode(secretKey);
@@ -127,5 +126,12 @@ public class JwtService {
 			SecurityContextHolder.getContext().setAuthentication(null);
 			return "El usuario ha abandonado la sesión";
 		}
+	}
+	
+	public void invalidateResetToken(String token) {
+		//Los tokens para resetear la contraseña solo se pueden usar 1 vez por motivos de seguridad
+		TokenJwt tokenJwt = tokensDao.findByToken(token);
+		tokenJwt.setValidez(TokenStatus.GASTADO);
+		tokensDao.save(tokenJwt);
 	}
 }

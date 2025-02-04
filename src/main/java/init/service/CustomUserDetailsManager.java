@@ -28,9 +28,11 @@ import init.utilidades.Mapeador;
 public class CustomUserDetailsManager implements UserDetailsManager {
 	
 	//Requisitos: Al menos 8 caracteres, una letra mayúscula, una minúscula, un número y un símbolo
-	private final String PASSWORD_PATTERN =
+	String PASSWORD_PATTERN =
 			"^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*(),.?\":{}|<>])[A-Za-z\\d!@#$%^&*(),.?\":{}|<>]{8,}$";
-	private final Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
+	Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
+	
+	String urlAngular = "http://www.aulas.com/auth/reset-password";
 	
 	UsuariosDao usuariosDao;
 	RolesDao rolesDao;
@@ -143,10 +145,10 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 		//Manda un email con la dirección del endpoint para resetear la contraseña, junto con el 
 		//token JWT que usamos como autenticación
 		Usuario usuario = usuariosDao.findByEmail(email)
-						.orElseThrow(() -> new NoSuchUserException("No existe ningún usuario con ese username"));
+				.orElseThrow(() -> new NoSuchUserException("No existe ningún usuario con ese username"));
 		String token = jwtService.createTokenResetPassword(usuario);
-		String mensaje = "Aquí tiene el enlace para la recuparación de su contraseña: " +
-				"http://localhost:8000/usuarios/resetearPassword?newPassword=" + token;
+		String mensaje = "Aquí tiene el enlace para la recuparación de su contraseña: " 
+				+ urlAngular + "?token=" + token;
 		emailService.enviarCorreo(email, "Recuperación de contraseña", mensaje);
 	}
 }
