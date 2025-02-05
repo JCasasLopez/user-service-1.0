@@ -112,10 +112,12 @@ public class UsuariosController {
 		return ResponseEntity.status(HttpStatus.OK).body(respuesta);
 	}
 	
+	/*En lugar de pasar el token en la url para resetear la contraseña, es más seguro hacerlo en 
+	el encabezado. Al hacerlo así, la petición va a ser capturada por el filtro 
+	JwtAuthenticationFilter, que lleva a cabo la autenticación, y vamos a encontrar el token en el 
+	objeto Authentication en SecurityContextHolder*/
 	@PostMapping(value="/resetPassword")
-	//En lugar de pasar el token en la url, es más seguro hacerlo en el encabezado
 	public ResponseEntity<StandardResponse> resetPassword(@RequestParam String newPassword){
-		
 		String token = (String) SecurityContextHolder.getContext().getAuthentication().getCredentials();
 		customUserDetailsManager.resetPassword(token, newPassword);	
 		StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), 
