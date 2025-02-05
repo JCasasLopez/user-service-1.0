@@ -154,9 +154,10 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 	
 	public void resetPassword(String token, String newPassword) {
 		//Si esta línea no lanza una excepción, significa que el token es válido
-		//Obtenemos el username, con el que después obtendremos el objeto usuario, y así 
-		//poder cambiar su contraseña (que codificamos con passwordEncoder)
 		String username = jwtService.extractPayload(token).getSubject();
+		
+		//Obtenemos el username, con el que después obtendremos el objeto usuario, y así 
+		//poder cambiar su contraseña (que codificamos con passwordEncoder) y persistimos
 		Usuario usuario = findUser(username);
 		usuario.setPassword(passwordEncoder.encode(newPassword));
 		usuariosDao.save(usuario);

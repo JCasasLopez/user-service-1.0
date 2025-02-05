@@ -48,7 +48,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				standardResponseHandler.handleResponse(response, 200, mensaje, null);
 				return; 
 			}
-
+			
 			//Si esta línea no lanza una excepción, significa que el token es válido
 			//por lo tanto, podemos establecer el objeto authentication en el SecurityContextHolder
 			String username = jwtService.extractPayload(token).getSubject();

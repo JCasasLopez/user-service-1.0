@@ -113,9 +113,11 @@ public class UsuariosController {
 	}
 	
 	@PostMapping(value="/resetPassword")
-	public ResponseEntity<StandardResponse> resetPassword(@RequestParam String token, 
-			@RequestParam String newPassword){
-		customUserDetailsManager.resetPassword(token, newPassword);		
+	//En lugar de pasar el token en la url, es más seguro hacerlo en el encabezado
+	public ResponseEntity<StandardResponse> resetPassword(@RequestParam String newPassword){
+		
+		String token = (String) SecurityContextHolder.getContext().getAuthentication().getCredentials();
+		customUserDetailsManager.resetPassword(token, newPassword);	
 		StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), 
 				"Su contraseña se ha reseteado correctamente", 
 				null, HttpStatus.OK);
