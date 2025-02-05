@@ -2,6 +2,7 @@ package init.service;
 
 import java.util.Base64;
 import java.util.Date;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
@@ -17,6 +18,7 @@ import init.entities.Rol;
 import init.entities.TokenJwt;
 import init.entities.TokenStatus;
 import init.entities.Usuario;
+import init.exception.TokenNotFoundException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
@@ -112,9 +114,12 @@ public class JwtService {
 	}
 	
 	public String logUserOut(String token) {
-		//En los comentarios de más abajo, la palabra "sesión" está entre comillas porque con los 
-		//tokens JWT no hay sesiones como tal, son stateless
-		TokenJwt tokenJwt = tokensDao.findByToken(token);
+		/*En los comentarios de más abajo, la palabra "sesión" está entre comillas porque con los 
+		tokens JWT no hay sesiones como tal, son stateless*/
+		Optional<TokenJwt> tokenJwtOptional = tokensDao.findByToken(token);
+		TokenJwt tokenJwt = tokenJwtOptional.orElseThrow(
+				() -> new TokenNotFoundException("El token no existe en la base de datos"));
+		
 		if(!(tokenJwt.getValidez() == TokenStatus.ACTIVO)) {
 			//La "sesión" ya estaba inactiva
 			return "La sesión ya estaba inactiva";
@@ -130,7 +135,9 @@ public class JwtService {
 	
 	public void invalidateResetToken(String token) {
 		//Los tokens para resetear la contraseña solo se pueden usar 1 vez por motivos de seguridad
-		TokenJwt tokenJwt = tokensDao.findByToken(token);
+		Optional<TokenJwt> tokenJwtOptional = tokensDao.findByToken(token);
+		TokenJwt tokenJwt = tokenJwtOptional.orElseThrow(
+				() -> new TokenNotFoundException("El token no existe en la base de datos"));
 		tokenJwt.setValidez(TokenStatus.GASTADO);
 		tokensDao.save(tokenJwt);
 	}
