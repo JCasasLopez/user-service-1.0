@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import init.entities.StandardResponse;
 import init.exception.InvalidPasswordException;
 import init.exception.NoSuchUserException;
+import init.exception.TokenNotFoundException;
 import init.exception.UserAlreadyAdminException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -86,6 +87,13 @@ public class GlobalExceptionHandler {
 				HttpStatus.UNAUTHORIZED);
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(respuesta);
     }
+    
+    @ExceptionHandler(TokenNotFoundException.class)
+	public ResponseEntity<StandardResponse> handleTokenNotFoundException(TokenNotFoundException ex){
+		StandardResponse respuesta = new StandardResponse (LocalDateTime.now(), 
+				ex.getMessage(), null, HttpStatus.NOT_FOUND);
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
+	}
     
     //Esta excepción es para el caso de que la contraseña no cumpla los requisitos de seguridad
     //(una mayúscula, una minúscula, un número y un símbolo) o al intentar cambiar la contraseña
