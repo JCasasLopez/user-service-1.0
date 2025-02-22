@@ -14,27 +14,14 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import init.entities.StandardResponse;
 import jakarta.servlet.http.HttpServletResponse;
 
-/*StandardResponseHandler es una clase que centraliza la gestión de respuestas HTTP en formato JSON.
-Su propósito es evitar la duplicación de código al manejar respuestas HTTP en diferentes partes
-de la aplicación, asegurando que todas las respuestas sigan un formato consistente.
-Características principales:
- - Utiliza Jackson (`ObjectMapper`) para serializar respuestas en JSON.
- - Configura `ObjectMapper` para manejar fechas correctamente (`JavaTimeModule`).
- - Permite establecer el código de estado HTTP, un mensaje y detalles adicionales en la respuesta.
- - Devuelve un objeto `HttpServletResponse` con la respuesta JSON escrita en el cuerpo.
- 
-Ejemplo de uso:
- 	responseHandler.handleResponse(response, HttpServletResponse.SC_UNAUTHORIZED, 
-                               "Acceso denegado", "Usuario o contraseña incorrectos");
-Esto enviará la siguiente respuesta JSON con estado HTTP 401:
- 
-{
-    "timestamp": "2024-01-31T12:00:00",
-    "message": "Acceso denegado",
-    "details": "Usuario o contraseña incorrectos",
-    "status": "UNAUTHORIZED"
-}
- */
+/*StandardResponseHandler convierte una StandardResponse en una respuesta HTTP estándar.
+  Es necesario en clases como AuthenticationFilter, donde StandardResponse no puede usarse 
+  directamente, ya que las excepciones lanzadas en un filtro no son gestionadas por 
+  GlobalExceptionHandler.
+  -----------------------------------------------------------------------------------------
+  StandardResponseHandler converts a StandardResponse into a standard HTTP response.
+  It is necessary in classes like AuthenticationFilter, where StandardResponse cannot be used 
+  directly, as exceptions thrown in a filter are not handled by GlobalExceptionHandler.*/
 
 @Component
 public class StandardResponseHandler {

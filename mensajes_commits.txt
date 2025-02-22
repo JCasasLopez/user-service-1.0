@@ -1,0 +1,132 @@
+fix: arreglados efectos secundarios TokensDao.findByToken() devuelva un Optional
+rafactor: se verifica que el token no esté gastado ni se haya abandonado la sesión
+refactor: ya no se valida el token otra vez innecesariamente
+fix: funcionalidad recuperar contraseña ya funciona
+Configuro como de libre acceso los dos últimos endpoints añadidos
+refactor: cambiado mensaje tras resetear contraseña correctamente
+añadido el método de UserDetailsService que resetea la contraseña
+endpoint 'resetPassword' añadido
+userDetailsManager.forgotPassword() y JwtService.invalidateResetToken() añadidos
+refactor: JwtService.createTokenResetPassword()
+refactor: JwtService.logUserOut() modificado
+refactor: TokenJwt modifcada para gestionar logout y reseteado de contraseña
+Endpoint 'olvidePassword' añadido
+createTokenResetPassword() añadido a JwtService
+forgotPassword() añadido a UserDetailsManager
+findByEmail() añadido a usuariosDao
+Funcionalidad notificaciones completada
+Evento publicado al crear usuario
+NotificacionService añadido
+Events creados
+EmailService añadido
+Proveedor STMP configurado
+Dependencia Spring Mail agregada
+refactor: general del manejo de excepciones
+refactor: eliminación de endpoints superfluos
+refactor: simplificación y eliminación de excepciones redundantes
+fix: AccessDeniedHandler ya funciona correctemente
+CustomAccessDeniedHandler creado
+refactor: AuthenticationEntryPoint y AuthenticationFailureHandler
+refactor: endpoint 'borrarUsuario'
+refactor: proceso de logout emplea StandardResponseHandler
+Merge cambios remotos con el README
+refactor: GlobalExceptionHandler emplea StandardResponseHandler
+refactor: endpoint 'usuarioEsAdmin' devuelve solo true/false
+Comentario escrito para aclarar el uso de StandardResponseHandler
+refactor: AuthenticationFailureHandler emplea StandardResponseHandler
+refactor: AuthenticationSuccessHandler emplea StandardResponseHandler
+refactor: AuthenticationEntryPoint emplea StandardResponseHandler
+StandardResponseHandler añadido para manejar respuestas HTTP de manera centralizada y reutilizable.
+Handlers adaptados a StandardResponse
+CustomAuthenticationEntryPoint adaptado a StandardResponse
+fix: ya funcionan todos los endpoints
+ApiError -> StandardResponse + UsuarioController adpatado al nuevo formato
+Clase ApiError añadida
+Update README.md
+Update README.md
+Create README.md
+refactor: hace el logout sin necesidad de hacer el login primero
+refactor: logout integrado en JwtAuthenticationFilter
+endpoint 'logout' eliminado
+refactor: código logout pulido
+refactor: proceso de logout
+refactor: todas las búsquedas de usuario pasan ahora por findUser()
+fix: funcionalidad desbloquear cuenta
+fix: CustomUserDetailsManager.changePassword()
+AuthenticationService eliminado para eliminar dependencia circular
+Endpoint 'usuarioEsAdmin' añadido
+Endpoint 'desbloquearCuenta' añadido
+Validación de contraseña esteblecida en changePassword()
+fix: funcionalidad bloque de cuenta
+wip: depurando funcionalidad bloqueo de cuenta
+CustomAuthenticationEntryPoint añadido
+fix: funcionalidad bloqueo cuenta
+wip: debugeando funcionalidad bloqueo cuenta
+SecurityConfig modificado para incluir los handlers en el filtro para el login
+fix: handlers y BlockAccountService arreglados
+fix: handlers modificados para gestionar que no exista el username
+NoSuchUserException añadida
+CustomAuthenticationFailureHandler y CustomAuthenticationSuccessHandler añadidos
+BlockAccountService.desbloquearCuenta() añadido
+BlockAccountService creado
+UsuarioDto y métodos de Mapeador modificados
+Entidad Usuario modificada para gestionar intentos fallidos de autenticación y bloqueo de cuenta
+UsuarioSecurity modificado para gestionar bloqueo de cuenta
+fix: corregida la validación de contraseña para cumplir con los requisitos
+Validar requisitos contraseña al crear usuario
+AuthenticationService.logout(): añadida @PreAuthorize()
+Borrados los 'System.out.println' usados para debugear
+LogoutFilter deshabilitado para que no interfiera
+endpoint 'logout' añadido al controller
+Lógica de JwtService.logUserOut() modificada
+UserLoggedOutException añadida a GlobalExceptionHandler
+Lógica de JwtAuthenticationFilter cambiada
+UserLoggedOutException añadida
+JwtAuthenticationFilter modificado para verificar que la sesión esté activa
+JwtService.logUserOut() añadido
+JwtService.isUserLoggedOut() añadido
+JwtService.createToken() modificado para persistir el token
+TokensDao añadido
+Entidad TokenJWT añadida
+Últimos retoques para aue funcione todo
+SecurityFilterChain modificado
+jwtService.validateToken() eliminado: no hace falta con JwtAuthenticationFilter
+JwtAuthenticationFilter completado
+WIP: JwtAuthenticationFilter
+endpoint 'validarToken' eliminado
+endpoint 'validarToken' refactorizado
+GlobalExceptionHandler refactorizado para incluir excepciones de validación del token
+endpoint 'validarToken' añadido
+JwtService.validateToken() completado
+WIP: JwtService.validateToken()
+Añadido endpoint 'login' y creación token JWT
+Añadido control de acceso basado en condiciones para borrarUsuario(), cambiarPassword() y crearAdmin()
+Añadida funcionalidad crearAdmin
+Excepciones personalizadas para username/email repetidos
+Funcionalidades para actualizar usuario eliminadas
+Refactorización para hacer funcionar la securización
+Refactorización createUser() y addRole() añadido
+Refactorización createUser() y updateUser() y sus tests para codificar contraseña
+application.properties duplicado: prod(MySQL), dev(H2)
+UsuariosController completado + GlobalExceptionHandler añadido
+TestsCustomUserDetailsManager completados
+WIP: TestsCustomUserDetailsManager. Tests para deleteUser() completados
+WIP: TestsCustomUserDetailsManager. Tests para updateManager() completados
+WIP: TestsCustomUserDetailsManager. Tests para createUser() completados
+WIP: TestsCustomUserDetailsManager. Tests para loadUserByUsername() completados
+WIP: TestsCustomUserDetailsManager
+Añadido SecurityFilterChain a SecurityConfig
+Añadido DaoAuthenticationProvider a SecurityConfig
+UserDetailsManagerImpl completado
+WIP: UserDetailsManagerImpl, diseñando QUIEN tendrá acceso a los métodos
+PasswordEnconder (BCrypt) añadido
+Actualizado Mapeador con usuarioDtoToUsuarioSecurity()
+WIP: UserDetailsManagerImpl
+UsuarioSecurity (implementa UserDetails)
+UsuarioDto y Mapeador
+TestsDao completado
+WIP: TestsDao
+Comentario sobre UsuariosDao
+UsuariosDao
+Entidad Rol
+Entidad Usuario
