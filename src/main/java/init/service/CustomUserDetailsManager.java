@@ -32,7 +32,7 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 			"^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*(),.?\":{}|<>])[A-Za-z\\d!@#$%^&*(),.?\":{}|<>]{8,}$";
 	Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
 	
-	String urlAngular = "http://www.aulas.com/auth/reset-password";
+	String urlAngular = "http://www.aulas.com/auth/createAccount";
 	
 	UsuariosDao usuariosDao;
 	RolesDao rolesDao;
